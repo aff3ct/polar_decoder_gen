@@ -5,7 +5,7 @@ mkdir ../src_generated/SC/      > /dev/null 2>&1
 mkdir ../src_generated/SCL/     > /dev/null 2>&1
 mkdir ../src_generated/SCL/CRC/ > /dev/null 2>&1
 
-# Frozen bits generation method (Gaussian Additive = "GA", Tal & Vardy = "TV")
+# Frozen bits generation method (Gaussian Approximation = "GA", Tal & Vardy = "TV")
 GEN="GA"
 
 echo "Generates SC decoders (rate 1/2)..."
