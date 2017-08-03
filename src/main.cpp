@@ -69,6 +69,7 @@ int main(int argc, char** argv)
 
 	opt_args[{"dec-type", "D"}][2] = "SC, SCL";
 
+	bool need_help = false;
 	if (ar.parse_arguments(req_args, opt_args))
 	{
 		factory::Frozenbits_generator::store_args(ar.get_args(), params_fbg);
@@ -89,14 +90,14 @@ int main(int argc, char** argv)
 		head_dec.push_back({"Base path", base_path});
 	}
 	else
-	{
-		ar.print_usage(arg_group);
-		return EXIT_FAILURE;
-	}
+		need_help = true;
 
-	if (ar.exist_arg({"help", "h"}))
+	if (ar.exist_arg({"help", "h"}) || need_help)
 	{
 		ar.print_usage(arg_group);
+		std::cout << "Powered by AFF3CT "
+		          << "(v" << version_major() << "." << version_minor() << "." << version_release() << ")."
+		          << std::endl;
 		return EXIT_FAILURE;
 	}
 
@@ -123,7 +124,7 @@ int main(int argc, char** argv)
 	auto fb_generator = factory::Frozenbits_generator::build(params_fbg);
 
 	// generate the frozen bits
-	mipp::vector<int> frozen_bits(params_dec.N_cw);
+	std::vector<bool> frozen_bits(params_dec.N_cw);
 	fb_generator->generate(frozen_bits);
 
 	// work only for SC or SCL and systematic encoding...
@@ -155,7 +156,7 @@ int main(int argc, char** argv)
 		                                     tools::Pattern_polar_SCL_rep_left,
 		                                     tools::Pattern_polar_SCL_spc,
 		                                     tools::Pattern_polar_SCL_std>(params_dec.polar_nodes, idx_r0, idx_r1);
-		
+
 		generator = new generator::Generator_polar_SCL_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
 		                                                   polar_patterns, *polar_patterns[idx_r0], 
 		                                                   *polar_patterns[idx_r1], dec_file, graph_file);

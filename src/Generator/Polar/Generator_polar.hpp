@@ -20,16 +20,17 @@ protected:
 	const int m; // graph depth
 	const float snr;
 
-	const mipp::vector<int>& frozen_bits;
+	const std::vector<bool>& frozen_bits;
 
 	const std::vector<tools::Pattern_polar_i*> &patterns;
 	const tools::Pattern_polar_i &pattern_rate0;
 	const tools::Pattern_polar_i &pattern_rate1;
 
-	tools::Pattern_polar_parser<int> parser;
+	tools::Pattern_polar_parser parser;
 
 	std::string mother_class_name;
 	std::string MOTHER_CLASS_NAME;
+	std::string fbits_name;
 
 	std::ostream &dec_stream;
 	std::ostream &short_dec_stream;
@@ -51,7 +52,7 @@ public:
 	Generator_polar(const int& K,
 	                const int& N,
 	                const float& snr,
-	                const mipp::vector<int>& frozen_bits,
+	                const std::vector<bool>& frozen_bits,
 	                const std::vector<tools::Pattern_polar_i*> &patterns,
 	                const tools::Pattern_polar_i &pattern_rate0,
 	                const tools::Pattern_polar_i &pattern_rate1,

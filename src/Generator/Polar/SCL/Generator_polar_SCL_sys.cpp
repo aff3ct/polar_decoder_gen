@@ -15,7 +15,7 @@ Generator_polar_SCL_sys
 ::Generator_polar_SCL_sys(const int& K,
                           const int& N,
                           const float& snr,
-                          const mipp::vector<int>& frozen_bits,
+                          const std::vector<bool>& frozen_bits,
                           const std::vector<Pattern_polar_i*> &patterns,
                           const Pattern_polar_i &pattern_rate0,
                           const Pattern_polar_i &pattern_rate1,
@@ -53,18 +53,13 @@ void Generator_polar_SCL_sys
 	stream1 << "class " << class_name << " : public " << this->mother_class_name << "<B, R, API_polar>"   << endl;
 	stream1 << "{"                                                                                        << endl;
 	stream1 << "public:"                                                                                  << endl;
-	stream1 << tab << class_name << "(const int& K, const int& N, const int& L,"
-	               <<               " const mipp::vector<B>& frozen_bits, CRC<B>& crc,"
+	stream1 << tab << class_name << "(const int& K, const int& N, const int& L, CRC<B>& crc,"
 	               <<               " const int n_frames = 1)"                                            << endl;
-	stream1 << tab << ": " << this->mother_class_name << "<B, R, API_polar>(K, N, L, frozen_bits, crc, "
-	               <<                                                      "n_frames)"                    << endl;
+	stream1 << tab << ": " << this->mother_class_name << "<B, R, API_polar>(K, N, L, " << this->fbits_name
+	               <<                                                       ", crc, n_frames)"            << endl;
 	stream1 << tab << "{"                                                                                 << endl;
 	stream1 << tab << tab << "assert(N == " << N << ");"                                                  << endl;
 	stream1 << tab << tab << "assert(K == " << K << ");"                                                  << endl;
-	stream1 << tab << tab                                                                                 << endl;
-	stream1 << tab << tab << "auto i = 0;"                                                                << endl;
-	stream1 << tab << tab << "while (i < " << N << " && " << fbits_name << "[i] == frozen_bits[i]) i++;"  << endl;
-	stream1 << tab << tab << "assert(i == " << N << ");"                                                  << endl;
 	stream1 << tab << "}"                                                                                 << endl;
 	stream1                                                                                               << endl;
 	stream1 << tab << "virtual ~" << class_name << "()"                                                   << endl;

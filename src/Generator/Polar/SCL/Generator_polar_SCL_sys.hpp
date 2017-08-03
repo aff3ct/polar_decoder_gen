@@ -18,7 +18,7 @@ public:
 	Generator_polar_SCL_sys(const int& K,
 	                        const int& N,
 	                        const float& snr,
-	                        const mipp::vector<int>& frozen_bits,
+	                        const std::vector<bool>& frozen_bits,
 	                        const std::vector<tools::Pattern_polar_i*> &patterns,
 	                        const tools::Pattern_polar_i &pattern_rate0,
 	                        const tools::Pattern_polar_i &pattern_rate1,

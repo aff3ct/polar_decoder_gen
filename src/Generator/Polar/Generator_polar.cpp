@@ -15,7 +15,7 @@ Generator_polar
 ::Generator_polar(const int& K,
                   const int& N,
                   const float& snr,
-                  const mipp::vector<int>& frozen_bits,
+                  const std::vector<bool>& frozen_bits,
                   const std::vector<Pattern_polar_i*> &patterns,
                   const Pattern_polar_i &pattern_rate0,
                   const Pattern_polar_i &pattern_rate1,
@@ -80,9 +80,9 @@ void Generator_polar
 
 	const auto n_lines = (int)ceil((float)frozen_bits.size() / 32.f);
 
-	string fbits_name = mother_class_name + "_fb_" + to_string(N) +
-	                                           "_" + to_string(K) +
-	                                           "_" + to_string((int)(snr*10));
+	fbits_name = mother_class_name + "_fb_" + to_string(N) +
+	                                    "_" + to_string(K) +
+	                                    "_" + to_string((int)(snr*10));
 
 	stringstream fbits;
 	auto i = 0;
@@ -103,6 +103,7 @@ void Generator_polar
 	dec_common1 << "#ifndef " << pragma_name                                                                  << endl;
 	dec_common1 << "#define " << pragma_name                                                                  << endl;
 	dec_common1                                                                                               << endl;
+	dec_common1 << "#include <vector>"                                                                        << endl;
 	dec_common1 << "#include <cassert>"                                                                       << endl;
 	dec_common1                                                                                               << endl;
 	dec_common1 << "#include \"../" << mother_class_name << ".hpp\""                                          << endl;
@@ -111,7 +112,7 @@ void Generator_polar
 	dec_common1 << "{"                                                                                        << endl;
 	dec_common1 << "namespace module"                                                                         << endl;
 	dec_common1 << "{"                                                                                        << endl;
-	dec_common1 << "static const char " << fbits_name << "[" << N << "] = {"                                  << endl;
+	dec_common1 << "static const std::vector<bool> " << fbits_name << " = {"                                  << endl;
 	dec_common1 << fbits.str() << "};"                                                                        << endl;
 	dec_common1                                                                                               << endl;
 
