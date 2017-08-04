@@ -67,12 +67,9 @@ void Generator_polar_SCL_sys
 	stream1 << tab << "}"                                                                                 << endl;
 	stream1                                                                                               << endl;
 
-	stream2 << tab << "void _decode_siho(const R *Y_N, B *V_K, const int frame_id)"                       << endl;
+	stream2 << tab << "void _decode(const R *Y_N)"                                                        << endl;
 	stream2 << tab << "{"                                                                                 << endl;
 	stream2 << tab << tab << "using namespace tools;"                                                     << endl;
-	stream2                                                                                               << endl;
-	stream2 << tab << tab << "auto t_decod = std::chrono::steady_clock::now();"                           << endl;
-	stream2 << tab << tab << "this->init_buffers();"                                                      << endl;
 	stream2                                                                                               << endl;
 	stream2 << tab << tab << "auto  y = Y_N;"                                                             << endl;
 	stream2 << tab << tab << "auto &l = this->l;"                                                         << endl;
@@ -83,18 +80,8 @@ void Generator_polar_SCL_sys
 void Generator_polar_SCL_sys
 ::generate_class_footer(std::ostream &stream)
 {
-	stream                                                                               << endl;
-	stream << tab << tab << "this->select_best_path();"                                  << endl;
-	stream << tab << tab << "auto d_decod = std::chrono::steady_clock::now() - t_decod;" << endl;
-	stream                                                                               << endl;
-	stream << tab << tab << "auto t_store = std::chrono::steady_clock::now();"           << endl;
-	stream << tab << tab << "this->_store(V_K);"                                         << endl;
-	stream << tab << tab << "auto d_store = std::chrono::steady_clock::now() - t_store;" << endl;
-	stream                                                                               << endl;
-	stream << tab << tab << "this->d_decod_total += d_decod;"                            << endl;
-	stream << tab << tab << "this->d_store_total += d_store;"                            << endl;
-	stream << tab << "}"                                                                 << endl;
-	stream << "};" << ""                                                                 << endl;
+	stream << tab << "}" << endl;
+	stream << "};" << "" << endl;
 }
 
 void Generator_polar_SCL_sys
