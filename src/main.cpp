@@ -39,7 +39,7 @@ int main(int argc, char** argv)
 	tools::Arguments_reader ar(argc, (const char**)argv);
 
 	factory::arg_map req_args, opt_args;
-	factory::params_list head_fbg, head_dec;
+	std::map<std::string, factory::header_list> headers;
 
 	opt_args[{"help", "h"}] = {"", "print this help."};
 
@@ -47,11 +47,11 @@ int main(int argc, char** argv)
 	factory::Decoder_polar       ::parameters params_dec;
 	
 	factory::arg_grp arg_group;
-	arg_group.push_back({factory::Frozenbits_generator::prefix, factory::Frozenbits_generator::name + " parameters"});
-	arg_group.push_back({factory::Decoder_polar       ::prefix, factory::Decoder_polar       ::name + " parameters"});
+	arg_group.push_back({params_fbg.get_prefix(), params_fbg.get_short_name() + " parameters"});
+	arg_group.push_back({params_dec.get_prefix(), params_dec.get_short_name() + " parameters"});
 
-	factory::Frozenbits_generator::build_args(req_args, opt_args);
-	factory::Decoder_polar       ::build_args(req_args, opt_args);
+	params_fbg.get_description(req_args, opt_args);
+	params_dec.get_description(req_args, opt_args);
 
 	req_args[{"fbg-snr" }] = {"float", "SNR for the frozen bits generation (Eb/N0 in dB, supposes a BPSK modulation)."};
 	opt_args[{"dec-path"}] = {"string", "Base path where the decoder will be generated (default = current dir)."};
@@ -72,10 +72,10 @@ int main(int argc, char** argv)
 	bool need_help = false;
 	if (ar.parse_arguments(req_args, opt_args))
 	{
-		factory::Frozenbits_generator::store_args(ar.get_args(), params_fbg);
+		params_fbg.store(ar.get_args());
 		params_dec.K    = params_fbg.K;
 		params_dec.N_cw = params_fbg.N_cw;
-		factory::Decoder_polar::store_args(ar.get_args(), params_dec);
+		params_dec.store(ar.get_args());
 
 		ebn0 = ar.get_arg_float({"fbg-snr"});
 		auto esn0 = tools::ebn0_to_esn0(ebn0, params_dec.R, 1);
@@ -84,10 +84,10 @@ int main(int argc, char** argv)
 		if (ar.exist_arg({"dec-path"}))
 			base_path = ar.get_arg({"dec-path"});
 
-		factory::Frozenbits_generator::make_header(head_fbg, params_fbg);
-		factory::Decoder_polar       ::make_header(head_dec, params_dec);
+		params_fbg.get_headers(headers);
+		params_dec.get_headers(headers);
 
-		head_dec.push_back({"Base path", base_path});
+		headers["dec"].push_back({"Base path", base_path});
 	}
 	else
 		need_help = true;
@@ -102,8 +102,8 @@ int main(int argc, char** argv)
 	}
 
 	int max_n_chars = 0;
-	factory::Header::compute_max_n_chars(head_fbg, max_n_chars);
-	factory::Header::compute_max_n_chars(head_dec, max_n_chars);
+	factory::Header::compute_max_n_chars(headers["fbg"], max_n_chars);
+	factory::Header::compute_max_n_chars(headers["dec"], max_n_chars);
 
 	// display configuration parameters
 	std::cout << "# " << tools::format("-------------------------------------------------", tools::Style::BOLD) << std::endl;
@@ -111,8 +111,8 @@ int main(int argc, char** argv)
 	std::cout << "# " << tools::format("-------------------------------------------------", tools::Style::BOLD) << std::endl;
 	std::cout << "# " << tools::format("Parameters :", tools::Style::BOLD | tools::Style::UNDERLINED)           << std::endl;
 
-	if (head_fbg.size()) factory::Header::print_parameters(factory::Frozenbits_generator::name, head_fbg, max_n_chars);
-	if (head_dec.size()) factory::Header::print_parameters(factory::Decoder_polar       ::name, head_dec, max_n_chars);
+	if (headers["fbg"].size()) factory::Header::print_parameters("fbg", params_fbg.get_short_name(), headers["fbg"], max_n_chars);
+	if (headers["dec"].size()) factory::Header::print_parameters("dec", params_dec.get_short_name(), headers["dec"], max_n_chars);
 
 	if (!tools::is_power_of_2(params_dec.N_cw))
 		throw std::invalid_argument("'N' has to be a power of 2 ('N' = " + std::to_string(params_dec.N_cw) + ").");
