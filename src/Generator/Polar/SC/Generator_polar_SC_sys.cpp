@@ -55,10 +55,12 @@ void Generator_polar_SC_sys
 	stream1 << "{"                                                                                        << endl;
 	stream1 << "public:"                                                                                  << endl;
 	stream1 << tab << class_name << "(const int& K, const int& N, const int n_frames = 1)"                << endl;
-	stream1 << tab << ": Decoder(K, N, n_frames, API_polar::get_n_frames(), \"" << class_name << "\"),"   << endl;
+	stream1 << tab << ": Decoder(K, N, n_frames, API_polar::get_n_frames()),"                             << endl;
 	stream1 << tab << "  " << this->mother_class_name << "<B, R, API_polar>(K, N, " << this->fbits_name
-	               << ", n_frames, \"" << class_name << "\")"                                             << endl;
+	               << ")"                                                                                 << endl;
 	stream1 << tab << "{"                                                                                 << endl;
+	stream1 << tab << tab << "const std::string name = \"" + class_name + "\";"                           << endl;
+	stream1 << tab << tab << "this->set_name(name);"                                                      << endl;
 	stream1 << tab << tab << "assert(N == " << N << ");"                                                  << endl;
 	stream1 << tab << tab << "assert(K == " << K << ");"                                                  << endl;
 	stream1 << tab << "}"                                                                                 << endl;
