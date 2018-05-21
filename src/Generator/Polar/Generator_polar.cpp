@@ -74,51 +74,20 @@ void Generator_polar
 		std::fill(stats[i].begin(), stats[i].end(), 0);
 
 	string class_name = get_class_name();
-	string pragma_name = MOTHER_CLASS_NAME + "_N"   + to_string(N) +
-	                                         "_K"   + to_string(K) +
-	                                       "_SNR" + to_string((int)(snr*10)) + "_HPP_";
 
-	const auto n_lines = (int)ceil((float)frozen_bits.size() / 32.f);
 
 	fbits_name = mother_class_name + "_fb_" + to_string(N) +
 	                                    "_" + to_string(K) +
 	                                    "_" + to_string((int)(snr*10));
 
-	stringstream fbits;
-	auto i = 0;
-	for (auto j = 0; j < n_lines; j++)
-	{
-		auto k = 0;
-		while (k < 32 && i < (int)frozen_bits.size())
-		{
-			fbits << frozen_bits[i];
-			if (i < (int)frozen_bits.size() -1) fbits << ", ";
-			i++; k++;
-		}
-		if (i < (int)frozen_bits.size()) fbits << endl;
-	}
 
 	// decoder generation
 	stringstream dec_common1, dec_common2, dec_common3, dec, short_dec1, short_dec2;
-	dec_common1 << "#ifndef " << pragma_name                                                                  << endl;
-	dec_common1 << "#define " << pragma_name                                                                  << endl;
-	dec_common1                                                                                               << endl;
-	dec_common1 << "#include <vector>"                                                                        << endl;
-	dec_common1 << "#include <cassert>"                                                                       << endl;
-	dec_common1                                                                                               << endl;
-	dec_common1 << "#include \"../" << mother_class_name << ".hpp\""                                          << endl;
-	dec_common1                                                                                               << endl;
-	dec_common1 << "namespace aff3ct"                                                                         << endl;
-	dec_common1 << "{"                                                                                        << endl;
-	dec_common1 << "namespace module"                                                                         << endl;
-	dec_common1 << "{"                                                                                        << endl;
-	dec_common1 << "static const std::vector<bool> " << fbits_name << " = {"                                  << endl;
-	dec_common1 << fbits.str() << "};"                                                                        << endl;
-	dec_common1                                                                                               << endl;
 
-	this->generate_class_header     (class_name, fbits_name, dec_common1, dec_common2);
-	this->recursive_generate_decoder(parser.get_polar_tree()->get_root(), dec        );
-	this->generate_class_footer     (dec_common3                                     );
+	this->generate_header           (mother_class_name, frozen_bits, fbits_name, dec_common1);
+	this->generate_class_header     (class_name, fbits_name, dec_common1, dec_common2      );
+	this->recursive_generate_decoder(parser.get_polar_tree()->get_root(), dec              );
+	this->generate_class_footer     (dec_common3                                           );
 
 	dec_common3 << "}"      << endl;
 	dec_common3 << "}"      << endl;

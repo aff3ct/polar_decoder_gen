@@ -73,6 +73,10 @@ public:
 	unsigned long get_n_generated_nodes_by_pattern(std::size_t pattern_hash, int graph_depth = -1) const;
 
 protected:
+	virtual void generate_header      (const std::string        mother_class_name,
+									   const std::vector<bool>& frozen_bits,
+									   const std::string        fbits_name,
+									         std::ostream       &stream) = 0;
 	virtual void generate_class_header(const std::string class_name,
 	                                   const std::string fbits_name,
 	                                         std::ostream &stream1,
