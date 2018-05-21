@@ -87,3 +87,11 @@ void Generator_polar_GPP
 	stream                                                                                               << endl;
 
 }
+
+void Generator_polar_GPP
+::generate_footer(std::ostream &stream)
+{
+	stream << "}"      << endl;
+	stream << "}"      << endl;
+	stream << "#endif" << endl;
+}

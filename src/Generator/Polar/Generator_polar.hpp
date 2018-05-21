@@ -76,12 +76,15 @@ protected:
 	virtual void generate_header      (const std::string        mother_class_name,
 									   const std::vector<bool>& frozen_bits,
 									   const std::string        fbits_name,
-									         std::ostream       &stream) = 0;
+									   std::ostream       &stream) = 0;
+
 	virtual void generate_class_header(const std::string class_name,
 	                                   const std::string fbits_name,
 	                                         std::ostream &stream1,
 	                                         std::ostream &stream2) = 0;
+
 	virtual void generate_class_footer(      std::ostream &stream)  = 0;
+	virtual void generate_footer      (      std::ostream &stream)  = 0;
 
 	virtual void recursive_generate_decoder      (const tools::Binary_node<tools::Pattern_polar_i>* node_curr, std::ostream &stream) = 0;
 	virtual void recursive_generate_short_decoder(const tools::Binary_node<tools::Pattern_polar_i>* node_curr, std::ostream &stream) = 0;

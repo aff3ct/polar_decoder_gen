@@ -88,10 +88,7 @@ void Generator_polar
 	this->generate_class_header     (class_name, fbits_name, dec_common1, dec_common2      );
 	this->recursive_generate_decoder(parser.get_polar_tree()->get_root(), dec              );
 	this->generate_class_footer     (dec_common3                                           );
-
-	dec_common3 << "}"      << endl;
-	dec_common3 << "}"      << endl;
-	dec_common3 << "#endif" << endl;
+	this->generate_footer           (dec_common3                                           );
 
 	dec_stream << dec_common1.str();
 	dec_stream << dec_common2.str();
