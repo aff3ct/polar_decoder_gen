@@ -67,7 +67,6 @@ void Generator_polar_TTA_SC_sys
 void Generator_polar_TTA_SC_sys
 ::generate_class_footer(std::ostream &stream)
 {
-	stream << tab << "}" << endl;
 	stream << "};" << "" << endl;
 }
 
@@ -79,41 +78,22 @@ void Generator_polar_TTA_SC_sys
 	if (!node_curr->is_leaf()) // stop condition
 	{
 		if (!node_curr->get_c()->apply_f().empty())
-			stream << tab << tab << node_curr->get_c()->apply_f();
+			stream << tab << node_curr->get_c()->apply_f();
 
 		this->recursive_generate_decoder(node_curr->get_left(), stream); // recursive call
 
 		if (!node_curr->get_c()->apply_g().empty())
-			stream << tab << tab << node_curr->get_c()->apply_g();
+			stream << tab << node_curr->get_c()->apply_g();
 
 		this->recursive_generate_decoder(node_curr->get_right(), stream); // recursive call
 	}
 
 	if (!node_curr->get_c()->apply_h().empty())
-		stream << tab << tab << node_curr->get_c()->apply_h();
+		stream << tab << node_curr->get_c()->apply_h();
 }
 
 void Generator_polar_TTA_SC_sys
 ::recursive_generate_short_decoder(const Binary_node<Pattern_polar_i>* node_curr, ostream &stream)
 {
-	if (subtree_occurences_cpy[node_curr->get_c()->get_key()] == 1)
-	{
-		if (!node_curr->is_leaf()) // stop condition
-		{
-			if (!node_curr->get_c()->apply_f().empty())
-				stream << tab << tab << node_curr->get_c()->apply_f();
-			this->recursive_generate_short_decoder(node_curr->get_left(), stream); // recursive call
-			if (!node_curr->get_c()->apply_g().empty())
-				stream << tab << tab << node_curr->get_c()->apply_g();
-			this->recursive_generate_short_decoder(node_curr->get_right(), stream); // recursive call
-		}
-		if (!node_curr->get_c()->apply_h().empty())
-			stream << tab << tab << node_curr->get_c()->apply_h();
-	}
-	else
-	{
-		stream << tab << tab;
-		stream << node_curr->get_c()->get_key()
-		       << "(" << node_curr->get_c()->get_off_l() << ", " << node_curr->get_c()->get_off_s() << ");" << endl;
-	}
+	// TODO
 }

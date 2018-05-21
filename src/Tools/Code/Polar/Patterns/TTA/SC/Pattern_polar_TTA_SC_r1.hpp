@@ -14,6 +14,20 @@ protected:
 	                    const int min_level = 0, const int max_level = -1)
 	: Pattern_polar_r1(N, node, min_level, max_level)
 	{
+		auto n_elm_2 = this->N / 2;
+		auto local_off_l = 0;
+
+		for (auto layer = this->m; layer > (this->m - node->get_depth()); layer--)
+		{
+			if ((n_elm_2 * 2) > 64)
+				local_off_l += n_elm_2 * 2;
+			else
+				local_off_l += 64;
+			n_elm_2 /= 2;
+		}
+
+		const int *p_off_l = &off_l;
+		*const_cast<int*>(p_off_l) = local_off_l;
 	}
 
 public:
@@ -42,18 +56,20 @@ public:
 		if (str_off_l.empty()) str_off_l = std::to_string(this->off_l);
 		if (str_off_s.empty()) str_off_s = std::to_string(this->off_s);
 
-		auto apply_h = h() + "  ";
-		std::string spaces = ""; for (auto i = 0; i < 2*this->n_dig+1; i++) spaces += " ";
-
 		std::stringstream stream;
-		stream << "API_polar::template "  << apply_h    << "<" << std::setw(this->n2_dig) << this->size << ">("
-		       << "s, "
-		       << "l, "
-		       << std::setw(this->n_dig ) << str_off_l  << "+" << std::setw(this->n_dig ) << 0          << ", "
-		       << spaces                                                                                << "  "
-		       << spaces                                                                                << "  "
-		       << std::setw(this->n_dig ) << str_off_s  << "+" << std::setw(this->n_dig ) << 0          << ", "
-		       << std::setw(this->n2_dig) << this->size << ");" << std::endl;
+		int code = (3 << 16) | (this->size >> 3);
+
+		if (this->si_2 < 64)
+		{
+			stream << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
+			stream << tab << "_TCE_POLAR_LEAF(l_a, s[" << (this->off_s >> 6) << "], " << (this->off_s >> 3);
+			stream << ", 0x" << std::hex << code << std::dec << ", s[" << (this->off_s >> 6) << "]);";
+			stream << std::endl;
+		}
+		else // n_elm
+		{
+
+		}
 
 		return stream.str();
 	}

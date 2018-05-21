@@ -162,7 +162,7 @@ int main(int argc, char** argv)
 	{
 		source_suffix = ".cpp";
 		if (params_dec.type == "SC")
-			file_name  = "Decoder_unrolled";
+			file_name  = "Decoder_simd_unrolled";
 	}
 
 	// open the files

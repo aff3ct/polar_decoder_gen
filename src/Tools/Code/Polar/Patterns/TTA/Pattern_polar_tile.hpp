@@ -15,6 +15,20 @@ protected:
 	                 const int min_level = 3, const int max_level = 3)
 	: Pattern_polar_i(N, node, min_level, max_level)
 	{
+		auto n_elm_2 = this->N / 2;
+		auto local_off_l = 0;
+
+		for (auto layer = this->m; layer > (this->m - node->get_depth()); layer--)
+		{
+			if ((n_elm_2 * 2) > 64)
+				local_off_l += n_elm_2 * 2;
+			else
+				local_off_l += 64;
+			n_elm_2 /= 2;
+		}
+
+		const int *p_off_l = &off_l;
+		*const_cast<int*>(p_off_l) = local_off_l;
 	}
 
 public:
@@ -40,6 +54,16 @@ public:
 	virtual std::string g() const { return ""; }
 	virtual std::string h() const { return ""; }
 
+	virtual std::string apply_h(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const
+	{
+		std::stringstream stream;
+
+		stream << "_TCE_LDOFF(" << this->off_l << ", l_a);" << std::endl;
+		stream << tab << "_TCE_POLAR_TILE8(l_a, f_b[" <<  (this->off_s >> 3) << "], s[" << (this->off_s >> 6) << "][" << ((this->off_s >> 3) & 7) << "]);";
+		stream << std::endl;
+
+		return  stream.str();
+	}
 
 	virtual int _match(const int &reverse_graph_depth, const Binary_node<Pattern_polar_i>* node_curr) const
 	{
