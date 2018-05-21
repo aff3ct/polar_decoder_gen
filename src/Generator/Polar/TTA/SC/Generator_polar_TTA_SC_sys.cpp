@@ -33,9 +33,10 @@ Generator_polar_TTA_SC_sys
                       "Decoder_polar_SC_fast_sys",
                       "DECODER_POLAR_SC_FAST_SYS",
                       dec_stream,
-                      short_dec_stream,
+					  dec_stream,
                       graph_stream,
-                      short_graph_stream)
+					  graph_stream,
+                      false)
 {
 }
 
@@ -50,32 +51,17 @@ void Generator_polar_TTA_SC_sys
                               std::ostream &stream1,
                               std::ostream &stream2)
 {
-	stream1 << "template <typename B, typename R, class API_polar>"                                       << endl;
-	stream1 << "class " << class_name << " : public " << this->mother_class_name << "<B, R, API_polar>"   << endl;
-	stream1 << "{"                                                                                        << endl;
-	stream1 << "public:"                                                                                  << endl;
-	stream1 << tab << class_name << "(const int& K, const int& N, const int n_frames = 1)"                << endl;
-	stream1 << tab << ": Decoder(K, N, n_frames, API_polar::get_n_frames()),"                             << endl;
-	stream1 << tab << "  " << this->mother_class_name << "<B, R, API_polar>(K, N, " << this->fbits_name
-	               << ")"                                                                                 << endl;
-	stream1 << tab << "{"                                                                                 << endl;
-	stream1 << tab << tab << "const std::string name = \"" + class_name + "\";"                           << endl;
-	stream1 << tab << tab << "this->set_name(name);"                                                      << endl;
-	stream1 << tab << tab << "assert(N == " << N << ");"                                                  << endl;
-	stream1 << tab << tab << "assert(K == " << K << ");"                                                  << endl;
-	stream1 << tab << "}"                                                                                 << endl;
-	stream1                                                                                               << endl;
-	stream1 << tab << "virtual ~" << class_name << "()"                                                   << endl;
-	stream1 << tab << "{"                                                                                 << endl;
-	stream1 << tab << "}"                                                                                 << endl;
-	stream1                                                                                               << endl;
-	stream2 << tab << "void _decode()"                                                                    << endl;
-	stream2 << tab << "{"                                                                                 << endl;
-	stream2 << tab << tab << "using namespace tools;"                                                     << endl;
-	stream2                                                                                               << endl;
-	stream2 << tab << tab << "auto &l = this->l;"                                                         << endl;
-	stream2 << tab << tab << "auto &s = this->s;"                                                         << endl;
-	stream2                                                                                               << endl;
+	stream1        << "#include \"Decoder_simd_unrolled.h\"" << endl;
+	stream1        <<                                           endl;
+	stream1        << "void Decoder_simd_unrolled::decode()" << endl;
+	stream1        << "{"                                    << endl;
+	stream1 << tab << "char64 l_a;"                          << endl;
+	stream1 << tab << "char64 l_b;"                          << endl;
+	stream1 << tab << "char64 l_c;"                          << endl;
+	stream1 << tab << "char8  temp_s;"                       << endl;
+	stream1 << tab <<                                           endl;
+	stream1 << tab << "_TCE_SET_BASE_ADDRESS(&l);"           << endl;
+	stream1 << tab <<                                           endl;
 }
 
 void Generator_polar_TTA_SC_sys

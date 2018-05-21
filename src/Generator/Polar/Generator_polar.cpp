@@ -119,6 +119,7 @@ void Generator_polar
 		                      << "fontcolor=\"" << patterns[p]->font_color() << "\""
 		                      << "];" << endl;
 	}
+
 	for (unsigned p = 0; p < patterns.size() -1; p++)
 	{
 		std::string rng0 = patterns[p   ]->range().empty() ? "" : std::string("\n") + patterns[p   ]->range();

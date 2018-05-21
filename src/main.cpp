@@ -25,6 +25,7 @@
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_rep.hpp"
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_r0.hpp"
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_std.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/Pattern_polar_tile.hpp"
 
 #include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_spc.hpp"
 #include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_r1.hpp"
@@ -172,6 +173,8 @@ int main(int argc, char** argv)
 	// generator allocation
 	std::vector<tools::Pattern_polar_i*> polar_patterns;
 	generator::Generator_polar *generator = nullptr;
+	Pattern_polar_i* pattern_tile;
+
 	if (arch == "GPP")
 	{
 		if (params_dec.type == "SCL")
@@ -227,6 +230,10 @@ int main(int argc, char** argv)
 					tools::Pattern_polar_TTA_SC_spc,
 					tools::Pattern_polar_TTA_SC_std>(params_dec.polar_nodes, idx_r0, idx_r1);
 
+			// add pattern_tile
+			pattern_tile = new Pattern_polar_tile();
+			polar_patterns.push_back(pattern_tile);
+
 			generator = new generator::Generator_polar_TTA_SC_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
 															      polar_patterns, *polar_patterns[idx_r0],
 															      *polar_patterns[idx_r1], dec_file, short_dec_file,
@@ -244,7 +251,6 @@ int main(int argc, char** argv)
 	// ----------------------------------------------------------------------------------------------------------------
 	// --------------------------------------------------------------------------------------- polar decoder generation
 	// ----------------------------------------------------------------------------------------------------------------
-
 	generator->generate();
 
 	// ----------------------------------------------------------------------------------------------------------------
@@ -337,7 +343,7 @@ int main(int argc, char** argv)
 	if (fb_generator != nullptr) delete fb_generator;
 
 	for (unsigned i = 0; i < polar_patterns.size(); i++)
-		delete polar_patterns[i]; // memory leak possible with patter_SC_rate0 and 1 (but OSEF)
+		delete polar_patterns[i]; // memory leak possible with patter_SC_rate0 and 1 (but OSEF) and maybe tile <3
 
 
 	return EXIT_SUCCESS;
