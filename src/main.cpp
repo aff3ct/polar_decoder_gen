@@ -8,6 +8,7 @@
 
 #include "Generator/Polar/GPP/SC/Generator_polar_GPP_SC_sys.hpp"
 #include "Generator/Polar/GPP/SCL/Generator_polar_GPP_SCL_sys.hpp"
+#include "Generator/Polar/TTA/SC/Generator_polar_TTA_SC_sys.hpp"
 
 #include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r0_left.hpp"
 #include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r1.hpp"
@@ -185,8 +186,8 @@ int main(int argc, char** argv)
 					tools::Pattern_polar_SCL_std>(params_dec.polar_nodes, idx_r0, idx_r1);
 
 			generator = new generator::Generator_polar_GPP_SCL_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
-															   polar_patterns, *polar_patterns[idx_r0],
-															   *polar_patterns[idx_r1], dec_file, graph_file);
+															       polar_patterns, *polar_patterns[idx_r0],
+															       *polar_patterns[idx_r1], dec_file, graph_file);
 		}
 		else if (params_dec.type == "SC")
 		{
@@ -226,10 +227,10 @@ int main(int argc, char** argv)
 					tools::Pattern_polar_TTA_SC_spc,
 					tools::Pattern_polar_TTA_SC_std>(params_dec.polar_nodes, idx_r0, idx_r1);
 
-			generator = new generator::Generator_polar_GPP_SC_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
-															  polar_patterns, *polar_patterns[idx_r0],
-															  *polar_patterns[idx_r1], dec_file, short_dec_file,
-															  graph_file, short_graph_file);
+			generator = new generator::Generator_polar_TTA_SC_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
+															      polar_patterns, *polar_patterns[idx_r0],
+															      *polar_patterns[idx_r1], dec_file, short_dec_file,
+															      graph_file, short_graph_file);
 		}
 		else
 			throw std::invalid_argument("Unsupported type of decoder.");

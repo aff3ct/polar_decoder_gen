@@ -1,21 +1,21 @@
-#ifndef GENERATOR_POLAR_GPP_SC_SYS_
-#define GENERATOR_POLAR_GPP_SC_SYS_
+#ifndef GENERATOR_POLAR_TTA_SC_SYS_
+#define GENERATOR_POLAR_TTA_SC_SYS_
 
 #include "../../../../../../../../../usr/include/c++/5/map"
 #include "../../../../../../../../../usr/include/c++/5/vector"
 #include "../../../../../lib/aff3ct/lib/MIPP/src/mipp.h"
 #include "../../../../../lib/aff3ct/src/aff3ct.hpp"
 
-#include "../Generator_polar_GPP.hpp"
+#include "../Generator_polar_TTA.hpp"
 
 namespace aff3ct
 {
 namespace generator
 {
-class Generator_polar_GPP_SC_sys : public Generator_polar_GPP
+class Generator_polar_TTA_SC_sys : public Generator_polar_TTA
 {
 public:
-	Generator_polar_GPP_SC_sys(const int& K,
+	Generator_polar_TTA_SC_sys(const int& K,
 							   const int& N,
 							   const float& snr,
 							   const std::vector<bool>& frozen_bits,
@@ -26,7 +26,7 @@ public:
 							   std::ostream &short_dec_stream   = std::cout,
 							   std::ostream &graph_stream       = std::cout,
 							   std::ostream &short_graph_stream = std::cout);
-	virtual ~Generator_polar_GPP_SC_sys();
+	virtual ~Generator_polar_TTA_SC_sys();
 
 protected:
 	void generate_class_header(const std::string class_name,
@@ -41,4 +41,4 @@ protected:
 }
 }
 
-#endif /* GENERATOR_POLAR_GPP_SC_SYS_ */
+#endif /* GENERATOR_POLAR_TTA_SC_SYS_ */

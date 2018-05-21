@@ -1,5 +1,5 @@
-#ifndef GENERATOR_POLAR_SCL_SYS_
-#define GENERATOR_POLAR_SCL_SYS_
+#ifndef GENERATOR_POLAR_GPP_SCL_SYS_
+#define GENERATOR_POLAR_GPP_SCL_SYS_
 
 #include <map>
 #include <vector>
@@ -39,4 +39,4 @@ protected:
 }
 }
 
-#endif /* GENERATOR_POLAR_SCL_SYS_ */
+#endif /* GENERATOR_POLAR_GPP_SCL_SYS_ */
