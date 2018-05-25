@@ -58,7 +58,14 @@ public:
 		}
 		else // n_elm
 		{
-
+			for (auto i = 0; i < this->si_2; i += 64)
+			{	if (i)
+				stream << tab;
+				stream        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
+				stream << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
+				stream << tab << "_TCE_POLAR_F8X64(l_a, l_b, l_c);" << std::endl;
+				stream << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
+			}
 		}
 
 
@@ -86,7 +93,14 @@ public:
 		}
 		else // n_elm
 		{
-
+			for (auto i = 0; i < this->si_2; i += 64)
+			{	if (i)
+					stream << tab;
+				stream        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
+				stream << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
+				stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, s[" << ((off_s >> 6) + (i >> 6)) << "], l_c);" << std::endl;
+				stream << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
+			}
 		}
 
 
@@ -98,10 +112,31 @@ public:
 		if (str_off_l.empty()) str_off_l = std::to_string(this->off_l);
 		if (str_off_s.empty()) str_off_s = std::to_string(this->off_s);
 
-
 		std::stringstream stream;
-		stream << "_TCE_PS_COMBINE(s[" << (off_s >> 6) << "]," << (off_s >> 3) << ", " << (this->si_2 >> 3) <<", ";
-		stream << "s[" << (off_s >> 6) << "]);" << std::endl;
+		if (this->si_2 < 64)
+		{
+			stream << "_TCE_PS_COMBINE(s[" << (off_s >> 6) << "]," << (off_s >> 3) << ", " << (this->si_2 >> 3) <<", ";
+			stream << "s[" << (off_s >> 6) << "]);" << std::endl;
+		}
+		else
+		{
+			for (auto i = 0; i < (this->si_2 >> 6); i++)
+			{
+				if(i)
+					stream << tab;
+				stream << "temp_s";
+				stream << " = ";
+				stream << "s[" << (this->off_s >> 6) + i << "]";
+				stream << " ^ ";
+				stream << "s[" << (((this->off_s +  + this->si_2) >> 6) + i) << "];" << std::endl;
+
+
+				stream << "s[" << (this->off_s >> 6) + i << "]";
+				stream << " = ";
+				stream << "temp_s;";
+
+			}
+		}
 
 		return stream.str();
 	}

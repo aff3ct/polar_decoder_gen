@@ -60,8 +60,6 @@ void Generator_polar_TTA_SC_sys
 	stream1 << tab << "char64 l_c;"                          << endl;
 	stream1 << tab << "char8  temp_s;"                       << endl;
 	stream1 << tab <<                                           endl;
-	stream1 << tab << "_TCE_SET_BASE_ADDRESS(&l);"           << endl;
-	stream1 << tab <<                                           endl;
 }
 
 void Generator_polar_TTA_SC_sys

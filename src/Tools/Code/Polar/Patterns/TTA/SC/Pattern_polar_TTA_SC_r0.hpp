@@ -59,7 +59,7 @@ namespace aff3ct
 				std::stringstream stream;
 				int code = (2 << 16) | (this->size >> 3);
 
-				if (this->si_2 < 64)
+				if (this->size < 64)
 				{
 					stream << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
 					stream << tab << "_TCE_POLAR_LEAF(l_a, s[" << (this->off_s >> 6) << "], " << (this->off_s >> 3);
@@ -68,7 +68,15 @@ namespace aff3ct
 				}
 				else // n_elm
 				{
-
+					for ( auto i = 0; (64 * i) < this->size; i++)
+					{
+						if(i)
+							stream << tab;
+						stream << "_TCE_LDOFF(" << (this->off_l + i * 64) << ", l_a);" << std::endl;
+						stream << tab << "_TCE_POLAR_LEAF(l_a, s[" << ((this->off_s >> 6) + i) << "], " << (this->off_s >> 3);
+						stream << ", 0x" << std::hex << code << std::dec << ", s[" << ((this->off_s >> 6) + i) << "]);";
+						stream << std::endl;
+					}
 				}
 
 
