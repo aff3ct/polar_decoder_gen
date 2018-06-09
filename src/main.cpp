@@ -9,6 +9,7 @@
 #include "Generator/Polar/GPP/SC/Generator_polar_GPP_SC_sys.hpp"
 #include "Generator/Polar/GPP/SCL/Generator_polar_GPP_SCL_sys.hpp"
 #include "Generator/Polar/TTA/SC/Generator_polar_TTA_SC_sys.hpp"
+#include "Generator/Polar/TTA/SCAN/Generator_polar_TTA_SCAN_sys.hpp"
 
 #include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r0_left.hpp"
 #include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r1.hpp"
@@ -25,7 +26,17 @@
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_rep.hpp"
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_r0.hpp"
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_std.hpp"
+
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_r0_left.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_r1.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_rep_left.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_spc.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_rep.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_r0.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_std.hpp"
+
 #include "Tools/Code/Polar/Patterns/TTA/Pattern_polar_tile.hpp"
+#include "Tools/Code/Polar/Patterns/TTA/Pattern_polar_tile_scan.hpp"
 
 #include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_spc.hpp"
 #include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_r1.hpp"
@@ -79,7 +90,7 @@ int main(int argc, char** argv)
 	opt_args.erase({"dec-partial-adaptive"});
 	opt_args.erase({"dec-simd"            });
 
-	opt_args[{"dec-type", "D"}][2] = "SC, SCL";
+	opt_args[{"dec-type", "D"}][2] = "SC, SCL, SCAN";
 
 	bool need_help = false;
 	if (ar.parse_arguments(req_args, opt_args))
@@ -163,6 +174,8 @@ int main(int argc, char** argv)
 		source_suffix = ".cpp";
 		if (params_dec.type == "SC")
 			file_name  = "Decoder_simd_unrolled";
+		else if (params_dec.type == "SCAN")
+			file_name  = "Decoder_simd_scan";
 	}
 
 	// open the files
@@ -235,6 +248,31 @@ int main(int argc, char** argv)
 			polar_patterns.push_back(pattern_tile);
 
 			generator = new generator::Generator_polar_TTA_SC_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
+															      polar_patterns, *polar_patterns[idx_r0],
+															      *polar_patterns[idx_r1], dec_file, short_dec_file,
+															      graph_file, short_graph_file);
+		}
+		else if (params_dec.type == "SCAN")
+		{
+			short_dec_file  .open((base_path + "/" + file_name + ".short" + source_suffix).c_str(), std::ios_base::out);
+			short_graph_file.open((base_path + "/" + file_name + ".short.dot"            ).c_str(), std::ios_base::out);
+
+			int idx_r0, idx_r1;
+			polar_patterns = tools::nodes_parser<
+			                                        tools::Pattern_polar_TTA_SCAN_r0,
+					                                tools::Pattern_polar_TTA_SCAN_r0_left,
+					                                tools::Pattern_polar_TTA_SCAN_r1,
+					                                tools::Pattern_polar_TTA_SCAN_rep,
+					                                tools::Pattern_polar_TTA_SCAN_rep_left,
+					                                tools::Pattern_polar_TTA_SCAN_spc,
+					                                tools::Pattern_polar_TTA_SCAN_std
+					                            >(params_dec.polar_nodes, idx_r0, idx_r1);
+
+			// add pattern_tile
+			pattern_tile = new Pattern_polar_tile_scan();
+			polar_patterns.push_back(pattern_tile);
+
+			generator = new generator::Generator_polar_TTA_SCAN_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
 															      polar_patterns, *polar_patterns[idx_r0],
 															      *polar_patterns[idx_r1], dec_file, short_dec_file,
 															      graph_file, short_graph_file);

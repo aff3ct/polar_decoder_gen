@@ -1,0 +1,147 @@
+#ifndef PATTERN_POLAR_TTA_SCAN_STANDARD_HPP_
+#define PATTERN_POLAR_TTA_SCAN_STANDARD_HPP_
+
+#include <aff3ct.hpp>
+
+namespace aff3ct
+{
+namespace tools
+{
+class Pattern_polar_TTA_SCAN_std : public Pattern_polar_std
+{
+protected:
+	Pattern_polar_TTA_SCAN_std(const int &N, const Binary_node<Pattern_polar_i>* node)
+	: Pattern_polar_std(N, node)
+	{
+		auto n_elm_2 = this->N / 2;
+		auto local_off_l = 0;
+
+		for (auto layer = this->m; layer > (this->m - node->get_depth()); layer--)
+		{
+			if ((n_elm_2 * 2) > 64)
+				local_off_l += n_elm_2 * 2;
+			else
+				local_off_l += 64;
+			n_elm_2 /= 2;
+		}
+
+		const int *p_off_l = &off_l;
+		*const_cast<int*>(p_off_l) = local_off_l;
+	}
+
+public:
+	Pattern_polar_TTA_SCAN_std() : Pattern_polar_std() {}
+
+	virtual ~Pattern_polar_TTA_SCAN_std() {}
+
+	virtual Pattern_polar_i* alloc(const int &N, const Binary_node<Pattern_polar_i>* node) const
+	{
+		return new Pattern_polar_TTA_SCAN_std(N, node);
+	}
+
+	virtual std::string apply_f(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const
+	{
+		if (str_off_l.empty()) str_off_l = std::to_string(this->off_l);
+
+		std::stringstream stream;
+
+		if (this->si_2 < 64)
+		{
+			// TODO only one load ?
+			stream << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
+			stream << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
+			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
+			stream << tab << "_TCE_POLAR_F8X64(l_a, l_b, l_c);" << std::endl;
+			stream << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
+			// TODO do not store if last leaf
+			// TODO is it necessary to store at all when size < 64 ?
+		}
+		else // n_elm
+		{
+			for (auto i = 0; i < this->si_2; i += 64)
+			{	if (i)
+				stream << tab;
+				stream        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
+				stream << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
+				stream << tab << "_TCE_POLAR_F8X64(l_a, l_b, l_c);" << std::endl;
+				stream << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
+			}
+		}
+
+
+		return stream.str();
+	}
+
+	virtual std::string apply_g(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const
+	{
+		if (str_off_l.empty()) str_off_l = std::to_string(this->off_l);
+		if (str_off_s.empty()) str_off_s = std::to_string(this->off_s);
+
+		std::stringstream stream;
+
+		if (this->si_2 < 64)
+		{
+			// TODO only one load ?
+			stream << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
+			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
+			stream << tab << "_TCE_ALIGN_8X8(s[" << (off_s >> 6) << "]," << ((off_s >> 3) & 7) << ", temp_s);" << std::endl;
+			stream << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
+			stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, temp_s, l_c);" << std::endl;
+			stream << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
+			// TODO do not store if last leaf
+			// TODO is it necessary to store at all when size < 64 ?
+		}
+		else // n_elm
+		{
+			for (auto i = 0; i < this->si_2; i += 64)
+			{	if (i)
+					stream << tab;
+				stream        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
+				stream << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
+				stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, s[" << ((off_s >> 6) + (i >> 6)) << "], l_c);" << std::endl;
+				stream << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
+			}
+		}
+
+
+		return stream.str();
+	}
+
+	virtual std::string apply_h(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const
+	{
+		if (str_off_l.empty()) str_off_l = std::to_string(this->off_l);
+		if (str_off_s.empty()) str_off_s = std::to_string(this->off_s);
+
+		std::stringstream stream;
+		if (this->si_2 < 64)
+		{
+			stream << "_TCE_PS_COMBINE(s[" << (off_s >> 6) << "]," << (off_s >> 3) << ", " << (this->si_2 >> 3) <<", ";
+			stream << "s[" << (off_s >> 6) << "]);" << std::endl;
+		}
+		else
+		{
+			for (auto i = 0; i < (this->si_2 >> 6); i++)
+			{
+				if(i)
+					stream << tab;
+				stream << "temp_s";
+				stream << " = ";
+				stream << "s[" << (this->off_s >> 6) + i << "]";
+				stream << " ^ ";
+				stream << "s[" << (((this->off_s +  + this->si_2) >> 6) + i) << "];" << std::endl;
+
+
+				stream << "s[" << (this->off_s >> 6) + i << "]";
+				stream << " = ";
+				stream << "temp_s;";
+
+			}
+		}
+
+		return stream.str();
+	}
+};
+}
+}
+
+#endif /* PATTERN_POLAR_TTA_SCAN_STANDARD_HPP_ */
