@@ -350,7 +350,9 @@ void Generator_polar
 			stream                                           << endl;
 
 			if (!node_curr->get_c()->apply_f("", "off_l", "off_s").empty())
+			{
 				stream << tab << tab << node_curr->get_c()->apply_f("", "off_l", "off_s");
+			}
 			if(node_curr->get_left() != nullptr)
 			{
 				stream << tab << tab;

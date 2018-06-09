@@ -57,9 +57,11 @@ public:
 	virtual std::string apply_h(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const
 	{
 		std::stringstream stream;
+		stream << tab << "_TCE_LDOFF("   << this->off_l << ", l_a);" << std::endl;
+		stream << tab << "_TCE_LDOFF_B(" << (this->m - this->rev_depth) * this->N + ((this->off_s * 4) & 0x7) << ", b_a);" << std::endl;
+		stream << tab << "_TCE_POLAR_TILE8_SCAN(l_a, b_a, " << ((this->off_s % 16) ? 1 : 0) << ", b_a);" << std::endl;
+		stream << tab << "_TCE_STOFF_B(" << (this->m - this->rev_depth) * this->N + ((this->off_s * 4) & 0x7) << ", b_a);" << std::endl;
 
-		stream << "_TCE_LDOFF(" << this->off_l << ", l_a);" << std::endl;
-		stream << tab << "_TCE_POLAR_TILE8(l_a, f_b[" <<  (this->off_s >> 3) << "], s[" << (this->off_s >> 6) << "][" << ((this->off_s >> 3) & 7) << "]);";
 		stream << std::endl;
 
 		return  stream.str();

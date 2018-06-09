@@ -80,18 +80,27 @@ void Generator_polar_TTA_SCAN_sys
 	if (!node_curr->is_leaf()) // stop condition
 	{
 		if (!node_curr->get_c()->apply_f().empty())
+		{
+			stream << tab << "// apply_f" << std::endl;
 			stream << tab << node_curr->get_c()->apply_f();
+		}
 
 		this->recursive_generate_decoder(node_curr->get_left(), stream); // recursive call
 
 		if (!node_curr->get_c()->apply_g().empty())
+		{
+			stream << tab << "// apply_g" << std::endl;
 			stream << tab << node_curr->get_c()->apply_g();
+		}
 
 		this->recursive_generate_decoder(node_curr->get_right(), stream); // recursive call
 	}
 
 	if (!node_curr->get_c()->apply_h().empty())
+	{
+		stream << tab << "// apply_h" << std::endl;
 		stream << tab << node_curr->get_c()->apply_h();
+	}
 }
 
 void Generator_polar_TTA_SCAN_sys
