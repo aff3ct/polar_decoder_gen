@@ -77,6 +77,7 @@ int main(int argc, char** argv)
 
 	req_args[{"fbg-snr" }] = {"float", "SNR for the frozen bits generation (Eb/N0 in dB, supposes a BPSK modulation)."};
 	opt_args[{"dec-path"}] = {"string", "Base path where the decoder will be generated (default = current dir)."};
+
 	opt_args[{"arch-type", "a"}] = {"string", "Target architecture.", "GPP, TTA"};
 
 	opt_args.erase({"fbg-sigma"           });
@@ -84,7 +85,6 @@ int main(int argc, char** argv)
 	req_args.erase({"dec-info-bits",   "K"});
 	opt_args.erase({"dec-fra",         "F"});
 	opt_args.erase({"dec-implem"          });
-	opt_args.erase({"dec-ite",         "i"});
 	opt_args.erase({"dec-lists",       "L"});
 	opt_args.erase({"dec-no-sys"          });
 	opt_args.erase({"dec-partial-adaptive"});
@@ -272,10 +272,11 @@ int main(int argc, char** argv)
 			pattern_tile = new Pattern_polar_tile_scan();
 			polar_patterns.push_back(pattern_tile);
 
-			generator = new generator::Generator_polar_TTA_SCAN_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
-															      polar_patterns, *polar_patterns[idx_r0],
-															      *polar_patterns[idx_r1], dec_file, short_dec_file,
-															      graph_file, short_graph_file);
+			generator = new generator::Generator_polar_TTA_SCAN_sys(params_dec.K, params_dec.N_cw, params_dec.n_ite, 
+				                                                    ebn0, frozen_bits, polar_patterns, 
+				                                                    *polar_patterns[idx_r0], *polar_patterns[idx_r1], 
+				                                                    dec_file, short_dec_file, graph_file, 
+				                                                    short_graph_file);
 		}
 		else
 			throw std::invalid_argument("Unsupported type of decoder.");

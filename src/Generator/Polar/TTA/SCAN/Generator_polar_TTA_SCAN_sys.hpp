@@ -14,18 +14,21 @@ namespace generator
 {
 class Generator_polar_TTA_SCAN_sys : public Generator_polar_TTA
 {
+private:
+	const int n_ite;
 public:
 	Generator_polar_TTA_SCAN_sys(const int& K,
-							   const int& N,
-							   const float& snr,
-							   const std::vector<bool>& frozen_bits,
-							   const std::vector<tools::Pattern_polar_i*> &patterns,
-							   const tools::Pattern_polar_i &pattern_rate0,
-							   const tools::Pattern_polar_i &pattern_rate1,
-							   std::ostream &dec_stream         = std::cout,
-							   std::ostream &short_dec_stream   = std::cout,
-							   std::ostream &graph_stream       = std::cout,
-							   std::ostream &short_graph_stream = std::cout);
+							     const int& N,
+							     const int& n_ite,
+							     const float& snr,
+							     const std::vector<bool>& frozen_bits,
+							     const std::vector<tools::Pattern_polar_i*> &patterns,
+							     const tools::Pattern_polar_i &pattern_rate0,
+							     const tools::Pattern_polar_i &pattern_rate1,
+							     std::ostream &dec_stream         = std::cout,
+							     std::ostream &short_dec_stream   = std::cout,
+							     std::ostream &graph_stream       = std::cout,
+							     std::ostream &short_graph_stream = std::cout);
 	virtual ~Generator_polar_TTA_SCAN_sys();
 
 protected:

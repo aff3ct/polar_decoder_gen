@@ -49,35 +49,35 @@ public:
 
 		if (this->si_2 <= 32)
 		{
-			stream << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
-			stream << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
-			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
+			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
+			stream << tab << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
+			stream << tab << tab << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
 			if (this->si_2 == 32)
 			{
-				stream << tab << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 << ", b_a);" << std::endl;
 			}
 			else if (this->si_2  == 16)
 			{
-				stream << tab << "_TCE_LDOFF_B_8X16(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B_8X16(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 << ", b_a);" << std::endl;
 			}
 			else if (this->si_2 == 8)
 			{
 				int off_b = (this->m - this->rev_depth + 1) * this->N + (this->off_s + this->si_2) * 4;
-				stream << tab << "_TCE_LDOFF_B_8X8(" << off_b << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B_8X8(" << off_b << ", b_a);" << std::endl;
 			}
-			stream << tab << "_TCE_POLAR_F_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
-			stream << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
+			stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
+			stream << tab << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
 		}
 		else // n_elm
 		{
 			for (auto i = 0; i < this->si_2; i += 64)
 			{	if (i)
 					stream << tab;
-				stream        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
-				stream << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
-				stream << tab << "_TCE_LDOFF_B(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 + i  << ", b_a);" << std::endl;
-				stream << tab << "_TCE_POLAR_F_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
-				stream << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
+				stream << tab        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 + i  << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
+				stream << tab << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
 			}
 		}
 
@@ -94,35 +94,35 @@ public:
 		if (this->si_2 <= 32)
 		{
 
-			stream << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
-			stream << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
-			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
+			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
+			stream << tab << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
+			stream << tab << tab << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
 			if (this->si_2 == 32)
 			{
-				stream << tab << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s << ", b_a);" << std::endl;
 			}
 			else if (this->si_2 == 16)
 			{
-				stream << tab << "_TCE_LDOFF_B_8X16(" << (this->m - this->rev_depth + 1) * this->N + this->off_s << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B_8X16(" << (this->m - this->rev_depth + 1) * this->N + this->off_s << ", b_a);" << std::endl;
 			}
 			else if (this->si_2 == 8)
 			{
 				int off_b = (this->m - this->rev_depth + 1) * this->N + this->off_s * 4;
-				stream << tab << "_TCE_LDOFF_B_8X8(" << off_b << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B_8X8(" << off_b << ", b_a);" << std::endl;
 			}
-			stream << tab << "_TCE_POLAR_F_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
-			stream << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
+			stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
+			stream << tab << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
 		}
 		else // n_elm
 		{
 			for (auto i = 0; i < this->si_2; i += 64)
 			{	if (i)
 					stream << tab;
-				stream        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
-				stream << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
-				stream << tab << "_TCE_LDOFF_B(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + i  << ", b_a);" << std::endl;
-				stream << tab << "_TCE_POLAR_G_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
-				stream << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
+				stream << tab        << "_TCE_LDOFF(" << this->off_l + i              << ", l_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF(" << this->off_l + i + this->si_2 << ", l_b);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + i  << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_POLAR_G_SCAN8X64(l_a, l_b, b_a, l_c);" << std::endl;
+				stream << tab << tab << "_TCE_STOFF(" << this->off_l + i + this->size << ", l_c);" << std::endl;
 			}
 		}
 
@@ -139,6 +139,68 @@ public:
 		if (this->rev_depth == this->m)
 			return "";
 		else if (this->si_2 == 32)
+		{
+			stream << tab        << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s               << ", b_a);" << std::endl;
+			stream << tab << tab << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2  << ", b_b);" << std::endl;
+			stream << tab << tab << "_TCE_LDOFF("   << str_off_l << ", l_a);"                                                                  << std::endl;
+			stream << tab << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);"                                                      << std::endl;
+			stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(b_a, b_b, l_b, b_c);"                                                               << std::endl;
+			stream << tab << tab << "_TCE_STOFF_B_8X32(" << (this->m - this->rev_depth    ) * this->N + this->off_s               << ", b_c);" << std::endl;
+			stream << tab << tab << "_TCE_POLAR_G_SCAN8X64(b_a, b_b, l_a, b_c);"                                                               << std::endl;
+			stream << tab << tab << "_TCE_STOFF_B_8X32(" << (this->m - this->rev_depth    ) * this->N + this->off_s + this->si_2  << ", b_c);" << std::endl;
+		}
+		else if (this->si_2 == 16)
+		{
+			stream << tab        << "_TCE_LDOFF_B_8X16(" << (this->m - this->rev_depth + 1) * this->N + this->off_s               << ", b_a);" << std::endl;
+			stream << tab << tab << "_TCE_LDOFF_B_8X16(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2  << ", b_b);" << std::endl;
+			stream << tab << tab << "_TCE_LDOFF("   << str_off_l << ", l_a);"                                                                  << std::endl;
+			stream << tab << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);"                                                      << std::endl;
+			stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(b_a, b_b, l_b, b_c);"                                                               << std::endl;
+			stream << tab << tab << "_TCE_STOFF_B_8X16(" << (this->m - this->rev_depth    ) * this->N + this->off_s               << ", b_c);" << std::endl;
+			stream << tab << tab << "_TCE_POLAR_G_SCAN8X64(b_a, b_b, l_a, b_c);"                                                               << std::endl;
+			stream << tab << tab << "_TCE_STOFF_B_8X16(" << (this->m - this->rev_depth    ) * this->N + this->off_s + this->si_2  << ", b_c);" << std::endl;
+		}
+		else if (this->si_2 == 8)
+		{
+			int off_b_a = (this->m - this->rev_depth + 1) * this->N + this->off_s * 4;
+			int off_b_b = (this->m - this->rev_depth + 1) * this->N + (this->off_s + this->si_2) * 4;
+			stream << tab        << "_TCE_LDOFF_B_8X8(" << off_b_a << ", b_a);"                                                               << std::endl;
+			stream << tab << tab << "_TCE_LDOFF_B_8X8(" << off_b_b << ", b_b);"                                                               << std::endl;
+			stream << tab << tab << "_TCE_LDOFF("   << str_off_l << ", l_a);"                                                                 << std::endl;
+			stream << tab << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);"                                                     << std::endl;
+			stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(b_a, b_b, l_b, b_c);"                                                              << std::endl;
+			stream << tab << tab << "_TCE_STOFF_B_8X8(" << (this->m - this->rev_depth    ) * this->N + this->off_s               << ", b_c);" << std::endl;
+			stream << tab << tab << "_TCE_POLAR_G_SCAN8X64(b_a, b_b, l_a, b_c);"                                                              << std::endl;
+			stream << tab << tab << "_TCE_STOFF_B_8X8(" << (this->m - this->rev_depth    ) * this->N + this->off_s + this->si_2  << ", b_c);" << std::endl;
+		}
+		else
+		{
+			for (auto i = 0; i < this->si_2; i += 64)
+			{
+				if(i)
+					stream << tab;
+				stream << tab        << "_TCE_LDOFF_B(" << (this->m - this->rev_depth + 1) * this->N + this->off_s              + i  << ", b_a);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF_B(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2 + i  << ", b_b);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF("   << this->off_l + i + this->si_2 << ", l_c);" << std::endl;
+				stream << tab << tab << "_TCE_POLAR_F_SCAN8X64(b_a, b_b, l_c, b_c);" << std::endl;
+				stream << tab << tab << "_TCE_STOFF_B(" << (this->m - this->rev_depth    ) * this->N + this->off_s              + i << ", b_c);" << std::endl;
+				stream << tab << tab << "_TCE_LDOFF(" << this->off_l + i                << ", l_c);" << std::endl;
+				stream << tab << tab << "_TCE_POLAR_G_SCAN8X64(b_a, b_b, l_c, b_c);" << std::endl;
+				stream << tab << tab << "_TCE_STOFF_B(" << (this->m - this->rev_depth    ) * this->N + this->off_s + this->si_2 + i << ", b_c);" << std::endl;
+			}
+		}
+
+		return stream.str();
+	}
+
+	std::string final_apply_h(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const
+	{
+		if (str_off_l.empty()) str_off_l = std::to_string(this->off_l);
+		if (str_off_s.empty()) str_off_s = std::to_string(this->off_s);
+
+
+		std::stringstream stream;
+		if (this->si_2 == 32)
 		{
 			stream        << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s               << ", b_a);" << std::endl;
 			stream << tab << "_TCE_LDOFF_B_8X32(" << (this->m - this->rev_depth + 1) * this->N + this->off_s + this->si_2  << ", b_b);" << std::endl;
@@ -190,8 +252,29 @@ public:
 			}
 		}
 
+		int code = (3 << 16) | (this->size >> 3);
+
+		if (this->si_2 < 64)
+		{
+			stream << "EE : final_apply_h undefined for N < 64" << std::endl;
+			exit(EXIT_FAILURE);
+		}
+		else // n_elm
+		{
+			for ( auto i = 0; (64 * i) < this->size; i++)
+			{
+				stream << tab;
+				stream << "_TCE_LDOFF_B(" << this->off_s + i * 64 << ", b_a);" << std::endl;
+				stream << tab << "_TCE_POLAR_LEAF(l_a, s[" << ((this->off_s >> 6) + i) << "], " << (this->off_s >> 3);
+				stream << ", 0x" << std::hex << code << std::dec << ", s[" << ((this->off_s >> 6) + i) << "]);";
+				stream << std::endl;
+			}
+		}
+
 		return stream.str();
 	}
+
+
 };
 }
 }

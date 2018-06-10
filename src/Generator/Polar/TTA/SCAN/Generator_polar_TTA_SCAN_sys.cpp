@@ -7,13 +7,14 @@
 using namespace std;
 
 #include "Generator_polar_TTA_SCAN_sys.hpp"
-
+#include "../../../../Tools/Code/Polar/Patterns/TTA/SCAN/Pattern_polar_TTA_SCAN_std.hpp"
 using namespace aff3ct::tools;
 using namespace aff3ct::generator;
 
 Generator_polar_TTA_SCAN_sys
 ::Generator_polar_TTA_SCAN_sys(const int& K,
                          const int& N,
+                         const int& n_ite,
                          const float& snr,
                          const std::vector<bool>& frozen_bits,
                          const std::vector<Pattern_polar_i*> &patterns,
@@ -36,7 +37,8 @@ Generator_polar_TTA_SCAN_sys
 					  dec_stream,
                       graph_stream,
 					  graph_stream,
-                      false)
+                      false), 
+  n_ite(n_ite)
 {
 }
 
@@ -64,11 +66,18 @@ void Generator_polar_TTA_SCAN_sys
 	stream1 << tab << "char64 b_b;"                                      << endl;
 	stream1 << tab << "char64 b_c;"                                      << endl;
 	stream1 << tab <<                                                       endl;
+	stream1 << tab << "for (int i = 0; i < " << this->n_ite << "; i++)"  << endl;
+	stream1 << tab << "{"                                                << endl;
 }
 
 void Generator_polar_TTA_SCAN_sys
 ::generate_class_footer(std::ostream &stream)
 {
+	stream << tab << "}" << "" << endl;
+	auto root = this->parser.get_polar_tree()->get_root();
+	auto root_pattern = dynamic_cast<Pattern_polar_TTA_SCAN_std*>(root->get_c());
+	stream << tab << root_pattern->final_apply_h();
+
 	stream << "};" << "" << endl;
 }
 
@@ -81,7 +90,7 @@ void Generator_polar_TTA_SCAN_sys
 	{
 		if (!node_curr->get_c()->apply_f().empty())
 		{
-			stream << tab << "// apply_f" << std::endl;
+			stream << tab << tab << "// apply_f" << std::endl;
 			stream << tab << node_curr->get_c()->apply_f();
 		}
 
@@ -89,7 +98,7 @@ void Generator_polar_TTA_SCAN_sys
 
 		if (!node_curr->get_c()->apply_g().empty())
 		{
-			stream << tab << "// apply_g" << std::endl;
+			stream << tab << tab << "// apply_g" << std::endl;
 			stream << tab << node_curr->get_c()->apply_g();
 		}
 
@@ -98,7 +107,7 @@ void Generator_polar_TTA_SCAN_sys
 
 	if (!node_curr->get_c()->apply_h().empty())
 	{
-		stream << tab << "// apply_h" << std::endl;
+		stream << tab << tab << "// apply_h" << std::endl;
 		stream << tab << node_curr->get_c()->apply_h();
 	}
 }
