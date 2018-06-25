@@ -49,7 +49,12 @@ public:
 		{
 			// TODO only one load ?
 			stream << "_TCE_LDOFF(" << this->off_l << ", l_a);" << std::endl;
-			stream << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);" << std::endl;
+			if (this->si_2 == 32)
+				stream << "_TCE_LDOFF_8X32(" << this->off_l + 32 << ", l_b);" << std::endl;
+			else if (this->si_2 == 16)
+				stream << "_TCE_LDOFF_8X16(" << this->off_l + 16 << ", l_b);" << std::endl;
+			else if (this->si_2 == 8)
+				stream << "_TCE_LDOFF_8X8(" << this->off_l + 8 << ", l_b);" << std::endl;
 			stream << tab << "_TCE_POLAR_F8X64(l_a, l_b, l_c);" << std::endl;
 			stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
 			// TODO do not store if last leaf
@@ -82,10 +87,21 @@ public:
 		{
 			// TODO only one load ?
 			stream << "_TCE_LDOFF(" << this->off_l << ", l_a);" << std::endl;
+
+			if (this->si_2 == 32)
+				stream << "_TCE_LDOFF_8X32(" << this->off_l + 32 << ", l_b);" << std::endl;
+			else if (this->si_2 == 16)
+				stream << "_TCE_LDOFF_8X16(" << this->off_l + 16 << ", l_b);" << std::endl;
+			else if (this->si_2 == 8)
+				stream << "_TCE_LDOFF_8X8(" << this->off_l + 8 << ", l_b);" << std::endl;
+
 			stream << tab << "_TCE_ALIGN_8X8(s[" << (off_s >> 6) << "]," << ((off_s >> 3) & 7) << ", temp_s);" << std::endl;
-			stream << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);" << std::endl;
 			stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, temp_s, l_c);" << std::endl;
 			stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
+			// 			if (!this->node->get_right()->get_c()->is_terminal())
+			// 	stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
+			// else 
+			// 	stream << tab << "RIGHT_TERMINAL" << std::endl;			// TODO do not store if last leaf
 			// TODO do not store if last leaf
 			// TODO is it necessary to store at all when size < 64 ?
 		}
