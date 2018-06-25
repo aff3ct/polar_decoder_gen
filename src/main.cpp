@@ -173,9 +173,11 @@ int main(int argc, char** argv)
 	{
 		source_suffix = ".cpp";
 		if (params_dec.type == "SC")
-			file_name  = "Decoder_simd_unrolled";
+			file_name  = "Decoder_simd_unrolled_N" + std::to_string(params_dec.N_cw) +
+						 "_K"   + std::to_string(params_dec.K);
 		else if (params_dec.type == "SCAN")
-			file_name  = "Decoder_simd_scan";
+			file_name  = "Decoder_simd_scan_N" + std::to_string(params_dec.N_cw) +
+						 "_K"   + std::to_string(params_dec.K);
 	}
 
 	// open the files

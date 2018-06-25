@@ -48,11 +48,10 @@ public:
 		if (this->si_2 < 64)
 		{
 			// TODO only one load ?
-			stream << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
-			stream << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
-			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
+			stream << "_TCE_LDOFF(" << this->off_l << ", l_a);" << std::endl;
+			stream << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);" << std::endl;
 			stream << tab << "_TCE_POLAR_F8X64(l_a, l_b, l_c);" << std::endl;
-			stream << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
+			stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
 			// TODO do not store if last leaf
 			// TODO is it necessary to store at all when size < 64 ?
 		}
@@ -82,12 +81,11 @@ public:
 		if (this->si_2 < 64)
 		{
 			// TODO only one load ?
-			stream << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
-			stream << tab << "_TCE_LDOFF(" << str_off_l << ", l_b);" << std::endl;
+			stream << "_TCE_LDOFF(" << this->off_l << ", l_a);" << std::endl;
 			stream << tab << "_TCE_ALIGN_8X8(s[" << (off_s >> 6) << "]," << ((off_s >> 3) & 7) << ", temp_s);" << std::endl;
-			stream << tab << "_TCE_ROTLELEM_8X64(l_b, " << this->si_2 << ", l_b);" << std::endl;
+			stream << tab << "_TCE_ROTLELEM_8X64(l_a, " << this->si_2 << ", l_b);" << std::endl;
 			stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, temp_s, l_c);" << std::endl;
-			stream << tab << "_TCE_STOFF(" << str_off_l << " + 64, l_c);" << std::endl;
+			stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
 			// TODO do not store if last leaf
 			// TODO is it necessary to store at all when size < 64 ?
 		}
@@ -131,9 +129,9 @@ public:
 				stream << "s[" << (((this->off_s +  + this->si_2) >> 6) + i) << "];" << std::endl;
 
 
-				stream << "s[" << (this->off_s >> 6) + i << "]";
+				stream << tab << "s[" << (this->off_s >> 6) + i << "]";
 				stream << " = ";
-				stream << "temp_s;";
+				stream << "temp_s;" << std::endl;
 
 			}
 		}
