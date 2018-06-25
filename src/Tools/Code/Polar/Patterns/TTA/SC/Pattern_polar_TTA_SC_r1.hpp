@@ -59,10 +59,9 @@ public:
 		std::stringstream stream;
 		int code = (3 << 16) | (this->size >> 3);
 
-		if (this->si_2 < 64)
+		if (this->size <= 64)
 		{
-			stream << "_TCE_LDOFF(" << str_off_l << ", l_a);" << std::endl;
-			stream << tab << "_TCE_POLAR_LEAF(l_a, s[" << (this->off_s >> 6) << "], " << (this->off_s >> 3);
+			stream << tab << "_TCE_POLAR_LEAF(l_c, s[" << (this->off_s >> 6) << "], " << (this->off_s >> 3);
 			stream << ", 0x" << std::hex << code << std::dec << ", s[" << (this->off_s >> 6) << "]);";
 			stream << std::endl;
 		}
