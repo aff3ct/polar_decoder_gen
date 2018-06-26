@@ -61,7 +61,7 @@ namespace aff3ct
 
 				if (this->size <= 64)
 				{
-					stream << tab << "_TCE_POLAR_LEAF(l_c, s[" << (this->off_s >> 6) << "], " << (this->off_s >> 3);
+					stream << "_TCE_POLAR_LEAF(l_c, s[" << (this->off_s >> 6) << "], " << (this->off_s >> 3);
 					stream << ", 0x" << std::hex << code << std::dec << ", s[" << (this->off_s >> 6) << "]);";
 					stream << std::endl;
 				}

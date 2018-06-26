@@ -58,7 +58,7 @@ public:
 	{
 		std::stringstream stream;
 
-		stream << tab << "_TCE_POLAR_TILE8(l_c, f_b[" <<  (this->off_s >> 3) << "], s[" << (this->off_s >> 6) << "][" << ((this->off_s >> 3) & 7) << "]);";
+		stream << "_TCE_POLAR_TILE8(l_c, f_b[" <<  (this->off_s >> 3) << "], s[" << (this->off_s >> 6) << "][" << ((this->off_s >> 3) & 7) << "]);";
 		stream << std::endl;
 
 		return  stream.str();
