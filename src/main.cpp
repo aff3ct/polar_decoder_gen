@@ -35,84 +35,132 @@ int main(int argc, char** argv)
 
 	float ebn0 = 0.f;
 	std::string base_path = ".";
+	tools::Argument_map_info args;
 
-	tools::Arguments_reader ar(argc, (const char**)argv);
-
-	factory::arg_map req_args, opt_args;
-	std::map<std::string, factory::header_list> headers;
-
-	opt_args[{"help", "h"}] = {"", "print this help."};
+	args.add({"help", "h"},
+		tools::None(),
+		"print this help.");
 
 	factory::Frozenbits_generator::parameters params_fbg;
 	factory::Decoder_polar       ::parameters params_dec;
-	
-	factory::arg_grp arg_group;
-	arg_group.push_back({params_fbg.get_prefix(), params_fbg.get_short_name() + " parameters"});
-	arg_group.push_back({params_dec.get_prefix(), params_dec.get_short_name() + " parameters"});
 
-	params_fbg.get_description(req_args, opt_args);
-	params_dec.get_description(req_args, opt_args);
+	tools::Argument_map_group grps;
+	grps[params_fbg.get_prefix()] = params_fbg.get_short_name() + " parameters";
+	grps[params_dec.get_prefix()] = params_dec.get_short_name() + " parameters";
 
-	req_args[{"fbg-snr" }] = {"float", "SNR for the frozen bits generation (Eb/N0 in dB, supposes a BPSK modulation)."};
-	opt_args[{"dec-path"}] = {"string", "Base path where the decoder will be generated (default = current dir)."};
+	params_fbg.get_description(args);
+	params_dec.get_description(args);
 
-	opt_args.erase({"fbg-sigma"           });
-	req_args.erase({"dec-cw-size",     "N"});
-	req_args.erase({"dec-info-bits",   "K"});
-	opt_args.erase({"dec-fra",         "F"});
-	opt_args.erase({"dec-implem"          });
-	opt_args.erase({"dec-ite",         "i"});
-	opt_args.erase({"dec-lists",       "L"});
-	opt_args.erase({"dec-no-sys"          });
-	opt_args.erase({"dec-partial-adaptive"});
-	opt_args.erase({"dec-simd"            });
+	args.add({params_fbg.get_prefix()+"-snr"},
+		tools::Real(),
+		"SNR for the frozen bits generation (Eb/N0 in dB, supposes a BPSK modulation).");
 
-	opt_args[{"dec-type", "D"}][2] = "SC, SCL";
+	args.add({params_dec.get_prefix()+"-path"},
+		tools::Folder(tools::openmode::read),
+		"Base path where the decoder will be generated (default = current dir).");
 
-	bool need_help = false;
-	if (ar.parse_arguments(req_args, opt_args))
+	args.erase({params_fbg.get_prefix()+"-sigma"           });
+	args.erase({params_dec.get_prefix()+"-cw-size",     "N"});
+	args.erase({params_dec.get_prefix()+"-info-bits",   "K"});
+	args.erase({params_dec.get_prefix()+"-fra",         "F"});
+	args.erase({params_dec.get_prefix()+"-implem"          });
+	args.erase({params_dec.get_prefix()+"-ite",         "i"});
+	args.erase({params_dec.get_prefix()+"-lists",       "L"});
+	args.erase({params_dec.get_prefix()+"-no-sys"          });
+	args.erase({params_dec.get_prefix()+"-partial-adaptive"});
+	args.erase({params_dec.get_prefix()+"-simd"            });
+	args.erase({params_dec.get_prefix()+"-flips"           });
+	args.erase({params_dec.get_prefix()+"-hamming"         });
+	args.erase({params_dec.get_prefix()+"-type",        "D"});
+
+	args.add({params_dec.get_prefix()+"-type", "D"},
+		tools::Text(tools::Including_set("SC", "SCL")),
+		"Set the type of decoder to generate (or to unroll).");
+
+	auto const_argv = const_cast<const char**>(argv);
+	tools::Argument_handler ah(argc, const_argv);
+	tools::Argument_map_value arg_vals;
+	std::vector<std::string> cmd_warn, cmd_error;
+	std::map<std::string,factory::header_list> headers;
+
+	arg_vals = ah.parse_arguments(args, cmd_warn, cmd_error);
+
+	try
 	{
-		params_fbg.store(ar.get_args());
+		params_fbg.store(arg_vals);
 		params_dec.K    = params_fbg.K;
 		params_dec.N_cw = params_fbg.N_cw;
-		params_dec.store(ar.get_args());
+		params_dec.store(arg_vals);
 
-		ebn0 = ar.get_arg_float({"fbg-snr"});
+		ebn0 = arg_vals.to_float({params_fbg.get_prefix()+"-snr"});
 		auto esn0 = tools::ebn0_to_esn0(ebn0, params_dec.R, 1);
 		params_fbg.sigma = tools::esn0_to_sigma(esn0, 1);
 
-		if (ar.exist_arg({"dec-path"}))
-			base_path = ar.get_arg({"dec-path"});
+		if (arg_vals.exist({params_dec.get_prefix()+"-path"}))
+			base_path = arg_vals.to_folder({params_dec.get_prefix()+"-path"});
 
 		params_fbg.get_headers(headers);
 		params_dec.get_headers(headers);
 
-		headers["dec"].push_back({"Base path", base_path});
+		headers[params_dec.get_prefix()].push_back({"Base path", base_path});
 	}
-	else
-		need_help = true;
-
-	if (ar.exist_arg({"help", "h"}) || need_help)
+	catch (const std::exception& e)
 	{
-		ar.print_usage(arg_group);
-		std::cout << "Powered by AFF3CT "
-		          << "(v" << version_major() << "." << version_minor() << "." << version_release() << ")."
-		          << std::endl;
+		auto save = tools::exception::no_backtrace;
+		tools::exception::no_backtrace = true;
+		cmd_error.emplace_back(e.what());
+		tools::exception::no_backtrace = save;
+	}
+
+	const bool display_help = arg_vals.exist({"help", "h"});
+	if (display_help)
+	{
+		ah.print_help(args, grps, false);
+		return EXIT_FAILURE;
+	}
+
+	// print usage
+	if (!cmd_error.empty() && !display_help)
+		ah.print_usage(args);
+
+	// print the errors
+	if (!cmd_error.empty()) std::cerr << std::endl;
+	for (unsigned e = 0; e < cmd_error.size(); e++)
+		std::cerr << rang::tag::error << cmd_error[e] << std::endl;
+
+	// print the help tags
+	if (!cmd_error.empty() && !display_help)
+	{
+		tools::Argument_tag help_tag = {"help", "h"};
+
+		std::string message = "For more information please display the help (\"";
+		message += tools::Argument_handler::print_tag(help_tag) += "\").";
+
+		std::cerr << std::endl << rang::tag::info << message << std::endl;
+
 		return EXIT_FAILURE;
 	}
 
 	int max_n_chars = 0;
-	factory::Header::compute_max_n_chars(headers["fbg"], max_n_chars);
-	factory::Header::compute_max_n_chars(headers["dec"], max_n_chars);
+	factory::Header::compute_max_n_chars(headers[params_fbg.get_prefix()], max_n_chars);
+	factory::Header::compute_max_n_chars(headers[params_dec.get_prefix()], max_n_chars);
 
 	// display configuration parameters
-	std::cout << "# " << tools::format("-------------------------------------------------", tools::Style::BOLD) << std::endl;
-	std::cout << "# " << tools::format("----  POLAR DECODER GENERATOR (with AFF3CT)  ----", tools::Style::BOLD) << std::endl;
-	std::cout << "# " << tools::format("-------------------------------------------------", tools::Style::BOLD) << std::endl;
-	std::cout << "# " << tools::format("Parameters :", tools::Style::BOLD | tools::Style::UNDERLINED)           << std::endl;
+	std::cout << "# " << rang::style::bold << "-------------------------------------------------" << std::endl;
+	std::cout << "# " << rang::style::bold << "----  POLAR DECODER GENERATOR (with AFF3CT)  ----" << std::endl;
+	std::cout << "# " << rang::style::bold << "-------------------------------------------------" << std::endl;
+	std::cout << "# " << rang::style::bold << rang::style::underline << "Parameters:" << rang::style::reset << std::endl;
 
-	if (headers["fbg"].size()) factory::Header::print_parameters("fbg", params_fbg.get_short_name(), headers["fbg"], max_n_chars);
-	if (headers["dec"].size()) factory::Header::print_parameters("dec", params_dec.get_short_name(), headers["dec"], max_n_chars);
+	if (headers["fbg"].size())
+		factory::Header::print_parameters(params_fbg.get_prefix(),
+		                                  params_fbg.get_short_name(),
+		                                  headers[params_fbg.get_prefix()],
+		                                  max_n_chars);
+	if (headers["dec"].size())
+		factory::Header::print_parameters(params_dec.get_prefix(),
+		                                  params_dec.get_short_name(),
+		                                  headers[params_dec.get_prefix()],
+		                                  max_n_chars);
 
 	if (!tools::is_power_of_2(params_dec.N_cw))
 		throw std::invalid_argument("'N' has to be a power of 2 ('N' = " + std::to_string(params_dec.N_cw) + ").");
@@ -149,17 +197,17 @@ int main(int argc, char** argv)
 	if (params_dec.type == "SCL")
 	{
 		int idx_r0, idx_r1;
-		polar_patterns = tools::nodes_parser<tools::Pattern_polar_SCL_r0,
+		polar_patterns = tools::Nodes_parser<tools::Pattern_polar_SCL_r0,
 		                                     tools::Pattern_polar_SCL_r0_left,
 		                                     tools::Pattern_polar_SCL_r1,
 		                                     tools::Pattern_polar_SCL_rep,
 		                                     tools::Pattern_polar_SCL_rep_left,
 		                                     tools::Pattern_polar_SCL_spc,
-		                                     tools::Pattern_polar_SCL_std>(params_dec.polar_nodes, idx_r0, idx_r1);
+		                                     tools::Pattern_polar_SCL_std>
+		                                     ::parse_ptr(params_dec.polar_nodes, idx_r0, idx_r1);
 
 		generator = new generator::Generator_polar_SCL_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
-		                                                   polar_patterns, *polar_patterns[idx_r0], 
-		                                                   *polar_patterns[idx_r1], dec_file, graph_file);
+		                                                   polar_patterns, idx_r0, idx_r1, dec_file, graph_file);
 	}
 	else if (params_dec.type == "SC")
 	{
@@ -167,17 +215,17 @@ int main(int argc, char** argv)
 		short_graph_file.open((base_path + "/" + file_name + ".short.dot").c_str(), std::ios_base::out);
 
 		int idx_r0, idx_r1;
-		polar_patterns = tools::nodes_parser<tools::Pattern_polar_SC_r0,
+		polar_patterns = tools::Nodes_parser<tools::Pattern_polar_SC_r0,
 		                                     tools::Pattern_polar_SC_r0_left,
 		                                     tools::Pattern_polar_SC_r1,
 		                                     tools::Pattern_polar_SC_rep,
 		                                     tools::Pattern_polar_SC_rep_left,
 		                                     tools::Pattern_polar_SC_spc,
-		                                     tools::Pattern_polar_SC_std>(params_dec.polar_nodes, idx_r0, idx_r1);
+		                                     tools::Pattern_polar_SC_std>
+		                                     ::parse_ptr(params_dec.polar_nodes, idx_r0, idx_r1);
 
 		generator = new generator::Generator_polar_SC_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
-		                                                  polar_patterns, *polar_patterns[idx_r0],
-		                                                  *polar_patterns[idx_r1], dec_file, short_dec_file, 
+		                                                  polar_patterns, idx_r0, idx_r1, dec_file, short_dec_file,
 		                                                  graph_file, short_graph_file);
 	}
 	else
@@ -195,8 +243,9 @@ int main(int argc, char** argv)
 
 	std::string tab = "   ";
 
-	std::cerr << "#"                                                                                 << std::endl;
-	std::cout << tools::format("General statistics:", tools::Style::BOLD | tools::Style::UNDERLINED) << std::endl;
+	std::cerr << "#"                                                                  << std::endl;
+	std::cout << rang::style::bold << rang::style::underline << "General statistics:" << std::endl;
+	std::cout << rang::style::reset;
 
 	unsigned long n_nodes     = params_dec.N_cw -1;
 	unsigned long n_nodes_gen = generator->get_n_generated_nodes();
@@ -212,7 +261,7 @@ int main(int argc, char** argv)
 		if (cur_pattern_SC->is_terminal())
 			std::cout << tab << tab << " - " << std::setw(11) << cur_pattern_SC->name() << ": "
 			          << std::setw(5)
-			          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), -1) 
+			          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), -1)
 			          << " / " << n_nodes_gen << std::endl;
 	}
 	std::cout << tab << "Non-terminal nodes (alias specialization rules):" << std::endl;
@@ -222,14 +271,14 @@ int main(int argc, char** argv)
 		if (!cur_pattern_SC->is_terminal())
 			std::cout << tab << tab << " - " << std::setw(11) << cur_pattern_SC->name() << ": "
 			          << std::setw(5)
-			          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), -1) 
+			          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), -1)
 			          << " / " << n_nodes_gen << std::endl;
 	}
 
 	std::cout << std::endl;
 
-	std::cout << tools::format("Per layer (graph depth) statistics:", tools::Style::BOLD | tools::Style::UNDERLINED) 
-              << std::endl;
+	std::cout << rang::style::bold << rang::style::underline << "Per layer (graph depth) statistics:"
+              << rang::style::reset << std::endl;
 	auto m = (int)std::ceil(std::log2(params_dec.N_cw));
 	for (auto d = 0; d < m +1; d++)
 	{
@@ -247,7 +296,7 @@ int main(int argc, char** argv)
 			if (cur_pattern_SC->is_terminal())
 				std::cout << tab << tab << tab << " - " << std::setw(11) << cur_pattern_SC->name() << ": "
 				          << std::setw(5)
-				          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), d) 
+				          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), d)
 				          << " / " << n_nodes_gen << std::endl;
 		}
 		std::cout << tab << tab << "Non-terminal nodes (alias specialization rules):" << std::endl;
@@ -257,7 +306,7 @@ int main(int argc, char** argv)
 			if (!cur_pattern_SC->is_terminal())
 				std::cout << tab << tab << tab << " - " << std::setw(11) << cur_pattern_SC->name() << ": "
 				          << std::setw(5)
-				          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), d) 
+				          << generator->get_n_generated_nodes_by_pattern(typeid(*cur_pattern_SC).hash_code(), d)
 				          << " / " << n_nodes_gen << std::endl;
 		}
 		if (d < m)
@@ -278,9 +327,9 @@ int main(int argc, char** argv)
 	if (generator    != nullptr) delete generator;
 	if (fb_generator != nullptr) delete fb_generator;
 
-	for (unsigned i = 0; i < polar_patterns.size(); i++)
-		delete polar_patterns[i]; // memory leak possible with patter_SC_rate0 and 1 (but OSEF)
-
+	// Automatically deleted by the "tools::Pattern_polar_parser" destructor
+	// for (unsigned i = 0; i < polar_patterns.size(); i++)
+	// 	delete polar_patterns[i]; // memory leak possible with patter_SC_rate0 and 1 (but OSEF)
 
 	return EXIT_SUCCESS;
 }

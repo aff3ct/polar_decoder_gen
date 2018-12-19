@@ -17,8 +17,8 @@ Generator_polar
                   const float& snr,
                   const std::vector<bool>& frozen_bits,
                   const std::vector<Pattern_polar_i*> &patterns,
-                  const Pattern_polar_i &pattern_rate0,
-                  const Pattern_polar_i &pattern_rate1,
+                  const int idx_r0,
+                  const int idx_r1,
                   string mother_class_name,
                   string MOTHER_CLASS_NAME,
                   ostream &dec_stream,
@@ -26,27 +26,27 @@ Generator_polar
                   ostream &graph_stream,
                   ostream &short_graph_stream,
                   const bool enable_short_decoder)
-: K                         (K                                                       ),
-  N                         (N                                                       ),
-  m                         ((int)log2(N)                                            ),
-  snr                       (snr                                                     ),
-  frozen_bits               (frozen_bits                                             ),
-  patterns                  (patterns                                                ),
-  pattern_rate0             (pattern_rate0                                           ),
-  pattern_rate1             (pattern_rate1                                           ),
-  parser                    (N, frozen_bits, patterns, &pattern_rate0, &pattern_rate1),
-  mother_class_name         (mother_class_name                                       ),
-  MOTHER_CLASS_NAME         (MOTHER_CLASS_NAME                                       ),
-  dec_stream                (dec_stream                                              ),
-  short_dec_stream          (short_dec_stream                                        ),
-  graph_stream              (graph_stream                                            ),
-  short_graph_stream        (short_graph_stream                                      ),
-  tab                       ("\t"                                                    ),
-  inlining_level            (3                                                       ),
-  stats                     (m +1                                                    ),
-  n_nodes_before_compression(0                                                       ),
-  n_nodes_after_compression (0                                                       ),
-  enable_short_decoder      (enable_short_decoder                                    )
+: K                         (K                                       ),
+  N                         (N                                       ),
+  m                         ((int)log2(N)                            ),
+  snr                       (snr                                     ),
+  frozen_bits               (frozen_bits                             ),
+  patterns                  (patterns                                ),
+  pattern_rate0             (*patterns[idx_r0]                       ),
+  pattern_rate1             (*patterns[idx_r1]                       ),
+  parser                    (N, frozen_bits, patterns, idx_r0, idx_r1),
+  mother_class_name         (mother_class_name                       ),
+  MOTHER_CLASS_NAME         (MOTHER_CLASS_NAME                       ),
+  dec_stream                (dec_stream                              ),
+  short_dec_stream          (short_dec_stream                        ),
+  graph_stream              (graph_stream                            ),
+  short_graph_stream        (short_graph_stream                      ),
+  tab                       ("\t"                                    ),
+  inlining_level            (3                                       ),
+  stats                     (m +1                                    ),
+  n_nodes_before_compression(0                                       ),
+  n_nodes_after_compression (0                                       ),
+  enable_short_decoder      (enable_short_decoder                    )
 {
 	for (unsigned i = 0; i < stats.size(); i++)
 		stats[i].resize(patterns.size());
@@ -117,7 +117,7 @@ void Generator_polar
 	dec_common1                                                                                               << endl;
 
 	this->generate_class_header     (class_name, fbits_name, dec_common1, dec_common2);
-	this->recursive_generate_decoder(parser.get_polar_tree()->get_root(), dec        );
+	this->recursive_generate_decoder(parser.get_polar_tree().get_root(), dec         );
 	this->generate_class_footer     (dec_common3                                     );
 
 	dec_common3 << "}"      << endl;
@@ -131,11 +131,11 @@ void Generator_polar
 
 	// graph generation
 	stringstream graph, short_graph;
-	this->recursive_generate_graph(parser.get_polar_tree()->get_root(), graph);
+	this->recursive_generate_graph(parser.get_polar_tree().get_root(), graph);
 	this->subtree_occurences_cpy = this->subtree_occurences;
 
 	if (enable_short_decoder)
-		this->recursive_generate_short_graph(parser.get_polar_tree()->get_root(), short_graph);
+		this->recursive_generate_short_graph(parser.get_polar_tree().get_root(), short_graph);
 
 	stringstream graph_common1;
 	graph_common1 << "digraph " << class_name << "{" << endl;
@@ -192,11 +192,11 @@ void Generator_polar
 		// short decoder generation
 		short_dec_stream << dec_common1.str();
 		this->subtree_occurences_cpy = this->subtree_occurences;
-		this->recursive_generate_short_decoder_funcs(parser.get_polar_tree()->get_root(), short_dec1);
+		this->recursive_generate_short_decoder_funcs(parser.get_polar_tree().get_root(), short_dec1);
 		short_dec_stream << short_dec1.str();
 		short_dec_stream << dec_common2.str();
 		this->subtree_occurences_cpy = this->subtree_occurences;
-		this->recursive_generate_short_decoder(parser.get_polar_tree()->get_root(), short_dec2);
+		this->recursive_generate_short_decoder(parser.get_polar_tree().get_root(), short_dec2);
 		short_dec_stream << short_dec2.str();
 		short_dec_stream << dec_common3.str();
 	}

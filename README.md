@@ -8,18 +8,23 @@ Get the AFF3CT library:
 
     $ git submodule update --init --recursive
 
-Compile the code on Linux/MacOS/MinGW:
+Compile the AFF3CT library on Linux/MacOS/MinGW:
 
+    $ cd lib/aff3ct
+    $ mkdir build
+    $ cd build
+    $ cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-funroll-loops -march=native" -DAFF3CT_COMPILE_EXE="OFF" -DAFF3CT_COMPILE_STATIC_LIB="ON" -DAFF3CT_EXT_STRINGS="OFF" -DCMAKE_INSTALL_PREFIX="install"
+    $ make -j4
+    $ make install
+    $ cd ../../../
+
+Compile this project:
+
+    $ cp -r lib/aff3ct/build/install/lib/cmake/aff3ct-* cmake-config
     $ mkdir build
     $ cd build
     $ cmake .. -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-funroll-loops -march=native"
     $ make -j4
-
-Create the project on Windows (Visual Studio, MSVC)
-
-    $ mkdir build
-    $ cd build
-    $ cmake .. -G"Visual Studio 14 2015 Win64" -DCMAKE_CXX_FLAGS="-DMULTI_PREC -D_SCL_SECURE_NO_WARNINGS /EHsc /arch:AVX2" -DCMAKE_BUILD_TYPE=Release
 
 The source code of this project is in the `src/` directory.
 The compiled binary is in `build/bin/polar_decoder_gen`.
@@ -67,7 +72,7 @@ Expected outpout:
            -     Default:     0 / 3
            - Rate 0 left:     0 / 3
            -    Rep left:     1 / 3
-    
+
     Per layer (graph depth) statistics:
     -----------------------------------
        * Graph depth = 0
@@ -83,7 +88,7 @@ Expected outpout:
               -     Default:     0 / 1
               - Rate 0 left:     0 / 1
               -    Rep left:     1 / 1
-    
+
        * Graph depth = 1
           Sub-code length = 4
           Nodes number before pruning = 2
@@ -97,7 +102,7 @@ Expected outpout:
               -     Default:     0 / 2
               - Rate 0 left:     0 / 2
               -    Rep left:     0 / 2
-    
+
        * Graph depth = 2
           Sub-code length = 2
           Nodes number before pruning = 4
@@ -111,7 +116,7 @@ Expected outpout:
               -     Default:     0 / 0
               - Rate 0 left:     0 / 0
               -    Rep left:     0 / 0
-    
+
        * Graph depth = 3
           Sub-code length = 1
           Nodes number before pruning = 8
@@ -126,4 +131,3 @@ Expected outpout:
               - Rate 0 left:     0 / 0
               -    Rep left:     0 / 0
     #
-
