@@ -94,7 +94,7 @@ int main(int argc, char** argv)
 
 		ebn0 = arg_vals.to_float({params_fbg.get_prefix()+"-snr"});
 		auto esn0 = tools::ebn0_to_esn0(ebn0, params_dec.R, 1);
-		params_fbg.sigma = tools::esn0_to_sigma(esn0, 1);
+		params_fbg.noise = tools::esn0_to_sigma(esn0, 1);
 
 		if (arg_vals.exist({params_dec.get_prefix()+"-path"}))
 			base_path = arg_vals.to_folder({params_dec.get_prefix()+"-path"});
@@ -170,6 +170,7 @@ int main(int argc, char** argv)
 	// ----------------------------------------------------------------------------------------------------------------
 
 	auto fb_generator = factory::Frozenbits_generator::build(params_fbg);
+	fb_generator->set_noise(tools::Sigma<float>(params_fbg.noise));
 
 	// generate the frozen bits
 	std::vector<bool> frozen_bits(params_dec.N_cw);
