@@ -11,9 +11,9 @@ The code is able to **match some simplifications in the Polar trees to reduce
 the decoders latency** like ``Rate 0``, ``Rate 1``, ``Repetition`` (rep) and
 ``Single Parity Check`` (spc) nodes. It is possible to select which tree cuts to
 enable/disable from the command line and see the impact on the generated source
-code. For large codewords the size of the generated source code can exceed the 
-size of the instruction cache of the CPU, this lead to reduced performances. In 
-this project **a compression algorithm is implemented** to push the codeword 
+code. For large codewords the size of the generated source code can exceed the
+size of the instruction cache of the CPU, this lead to reduced performances. In
+this project **a compression algorithm is implemented** to push the codeword
 size limit and keep best possible performance.
 
 Additionally, the code generates ``.dot`` files compatible with
@@ -70,7 +70,7 @@ The compiled binary is in `build/bin/polar_decoder_gen`.
 
 Generates an Polar SC decoder with a *N = 8*, *K = 4* and optimized for a *Eb/N0 = 2.5 dB*:
 
-    $ ./bin/polar_decoder_gen --dec-type SC -N 8 -K 4 --fbg-snr 2.5
+    $ ./bin/polar_decoder_gen --dec-type SC -N 8 -K 4 --fbg-noise 2.5
 
 Expected outpout:
 

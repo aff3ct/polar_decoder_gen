@@ -33,7 +33,6 @@ int main(int argc, char** argv)
 	// ------------------------------------------------------------------------------------------ parameters management
 	// ----------------------------------------------------------------------------------------------------------------
 
-	float ebn0 = 0.f;
 	std::string base_path = ".";
 	tools::Argument_map_info args;
 
@@ -50,10 +49,6 @@ int main(int argc, char** argv)
 
 	params_fbg.get_description(args);
 	params_dec.get_description(args);
-
-	args.add({params_fbg.get_prefix()+"-snr"},
-		tools::Real(),
-		"SNR for the frozen bits generation (Eb/N0 in dB, supposes a BPSK modulation).");
 
 	args.add({params_dec.get_prefix()+"-path"},
 		tools::Folder(tools::openmode::read),
@@ -72,6 +67,7 @@ int main(int argc, char** argv)
 	args.erase({params_dec.get_prefix()+"-flips"           });
 	args.erase({params_dec.get_prefix()+"-hamming"         });
 	args.erase({params_dec.get_prefix()+"-type",        "D"});
+	args.erase({params_dec.get_prefix()+"-seed",           });
 
 	args.add({params_dec.get_prefix()+"-type", "D"},
 		tools::Text(tools::Including_set("SC", "SCL")),
@@ -91,10 +87,6 @@ int main(int argc, char** argv)
 		params_dec.K    = params_fbg.K;
 		params_dec.N_cw = params_fbg.N_cw;
 		params_dec.store(arg_vals);
-
-		ebn0 = arg_vals.to_float({params_fbg.get_prefix()+"-snr"});
-		auto esn0 = tools::ebn0_to_esn0(ebn0, params_dec.R, 1);
-		params_fbg.noise = tools::esn0_to_sigma(esn0, 1);
 
 		if (arg_vals.exist({params_dec.get_prefix()+"-path"}))
 			base_path = arg_vals.to_folder({params_dec.get_prefix()+"-path"});
@@ -170,7 +162,8 @@ int main(int argc, char** argv)
 	// ----------------------------------------------------------------------------------------------------------------
 
 	auto fb_generator = factory::Frozenbits_generator::build(params_fbg);
-	fb_generator->set_noise(tools::Sigma<float>(params_fbg.noise));
+	const auto ebn0 = params_fbg.noise;
+	fb_generator->set_noise(tools::Sigma<float>(tools::esn0_to_sigma(tools::ebn0_to_esn0(ebn0, params_dec.R))));
 
 	// generate the frozen bits
 	std::vector<bool> frozen_bits(params_dec.N_cw);
