@@ -1,9 +1,9 @@
 #ifndef GENERATOR_POLAR_GPP_SCL_SYS_
 #define GENERATOR_POLAR_GPP_SCL_SYS_
 
-#include <map>
 #include <vector>
-#include <mipp.h>
+#include <string>
+#include <iostream>
 #include <aff3ct.hpp>
 
 #include "../Generator_polar_GPP.hpp"
@@ -20,8 +20,8 @@ public:
 	                            const float& snr,
 	                            const std::vector<bool>& frozen_bits,
 	                            const std::vector<tools::Pattern_polar_i*> &patterns,
-	                            const tools::Pattern_polar_i &pattern_rate0,
-	                            const tools::Pattern_polar_i &pattern_rate1,
+	                            const int idx_r0,
+	                            const int idx_r1,
 	                            std::ostream &dec_stream   = std::cout,
 	                            std::ostream &graph_stream = std::cout);
 	virtual ~Generator_polar_GPP_SCL_sys();

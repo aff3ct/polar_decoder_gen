@@ -54,8 +54,8 @@ public:
 	                const float& snr,
 	                const std::vector<bool>& frozen_bits,
 	                const std::vector<tools::Pattern_polar_i*> &patterns,
-	                const tools::Pattern_polar_i &pattern_rate0,
-	                const tools::Pattern_polar_i &pattern_rate1,
+	                const int idx_r0,
+	                const int idx_r1,
 	                std::string mother_class_name,
 	                std::string MOTHER_CLASS_NAME,
 	                std::ostream &dec_stream         = std::cout,
@@ -73,10 +73,10 @@ public:
 	unsigned long get_n_generated_nodes_by_pattern(std::size_t pattern_hash, int graph_depth = -1) const;
 
 protected:
-	virtual void generate_header      (const std::string        mother_class_name,
-									   const std::vector<bool>& frozen_bits,
-									   const std::string        fbits_name,
-									   std::ostream       &stream) = 0;
+	virtual void generate_header(const std::string        mother_class_name,
+	                             const std::vector<bool> &frozen_bits,
+	                             const std::string        fbits_name,
+	                                   std::ostream      &stream) = 0;
 
 	virtual void generate_class_header(const std::string class_name,
 	                                   const std::string fbits_name,

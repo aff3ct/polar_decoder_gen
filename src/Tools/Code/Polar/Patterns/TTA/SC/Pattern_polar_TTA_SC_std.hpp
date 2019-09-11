@@ -59,10 +59,12 @@ public:
 				stream << tab << "_TCE_LDOFF_8X8(" << this->off_l + 8 << ", l_b);" << std::endl;
 			stream << tab << "_TCE_POLAR_F8X64(l_a, l_b, l_c);" << std::endl;
 			if (! this->node->get_left()->get_c()->is_terminal())
+			{
 				if (this->si_2 == 64)
 					stream << tab << "_TCE_STOFF(" << this->off_l + this->size << ", l_c);" << std::endl;
 				else
 					stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
+			}
 		}
 		else // n_elm
 		{

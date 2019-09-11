@@ -73,12 +73,13 @@ public:
 				stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, s[" << (off_s >> 6) << "], l_c);" << std::endl;
 
 			stream << tab << "_TCE_POLAR_G8X64(l_a, l_b, temp_s, l_c);" << std::endl;
-			
 			if (! this->node->get_right()->get_c()->is_terminal())
+			{
 				if (this->si_2 != 64)
 					stream << tab << "_TCE_STOFF(" << this->off_l + 64 << ", l_c);" << std::endl;
 				else
 					stream << tab << "_TCE_STOFF(" << this->off_l + this->size << ", l_c);" << std::endl;
+			}
 			// TODO do not store if last leaf
 		}
 		else // n_elm
