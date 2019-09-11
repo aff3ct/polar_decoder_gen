@@ -11,13 +11,13 @@
 #include "Generator/Polar/TTA/SC/Generator_polar_TTA_SC_sys.hpp"
 #include "Generator/Polar/TTA/SCAN/Generator_polar_TTA_SCAN_sys.hpp"
 
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r0_left.hpp"
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r1.hpp"
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_rep_left.hpp"
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_spc.hpp"
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_rep.hpp"
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_r0.hpp"
-#include "Tools/Code/Polar/Patterns/SC/Pattern_polar_SC_std.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_r0_left.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_r1.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_rep_left.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_spc.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_rep.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_r0.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SC/Pattern_polar_SC_std.hpp"
 
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_r0_left.hpp"
 #include "Tools/Code/Polar/Patterns/TTA/SC/Pattern_polar_TTA_SC_r1.hpp"
@@ -38,13 +38,13 @@
 #include "Tools/Code/Polar/Patterns/TTA/Pattern_polar_tile.hpp"
 #include "Tools/Code/Polar/Patterns/TTA/Pattern_polar_tile_scan.hpp"
 
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_spc.hpp"
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_r1.hpp"
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_rep.hpp"
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_r0.hpp"
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_rep_left.hpp"
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_r0_left.hpp"
-#include "Tools/Code/Polar/Patterns/SCL/Pattern_polar_SCL_std.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_spc.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_r1.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_rep.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_r0.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_rep_left.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_r0_left.hpp"
+#include "Tools/Code/Polar/Patterns/GPP/SCL/Pattern_polar_SCL_std.hpp"
 
 using namespace aff3ct;
 
@@ -276,9 +276,6 @@ int main(int argc, char** argv)
 	{
 		if (params_dec.type == "SC")
 		{
-			short_dec_file  .open((base_path + "/" + file_name + ".short" + source_suffix).c_str(), std::ios_base::out);
-			short_graph_file.open((base_path + "/" + file_name + ".short.dot"            ).c_str(), std::ios_base::out);
-
 			int idx_r0, idx_r1;
 			polar_patterns = tools::Nodes_parser<tools::Pattern_polar_TTA_SC_r0,
 			                                     tools::Pattern_polar_TTA_SC_r0_left,
@@ -294,14 +291,10 @@ int main(int argc, char** argv)
 			polar_patterns.push_back(pattern_tile);
 
 			generator = new generator::Generator_polar_TTA_SC_sys(params_dec.K, params_dec.N_cw, ebn0, frozen_bits,
-			                                                      polar_patterns, idx_r0, idx_r1, dec_file,
-			                                                      short_dec_file, graph_file, short_graph_file);
+			                                                      polar_patterns, idx_r0, idx_r1, dec_file, graph_file);
 		}
 		else if (params_dec.type == "SCAN")
 		{
-			short_dec_file  .open((base_path + "/" + file_name + ".short" + source_suffix).c_str(), std::ios_base::out);
-			short_graph_file.open((base_path + "/" + file_name + ".short.dot"            ).c_str(), std::ios_base::out);
-
 			int idx_r0, idx_r1;
 			polar_patterns = tools::Nodes_parser<tools::Pattern_polar_TTA_SCAN_r0,
 			                                     tools::Pattern_polar_TTA_SCAN_r0_left,
@@ -318,8 +311,7 @@ int main(int argc, char** argv)
 
 			generator = new generator::Generator_polar_TTA_SCAN_sys(params_dec.K, params_dec.N_cw, params_dec.n_ite,
 			                                                        ebn0, frozen_bits, polar_patterns, idx_r0, idx_r1,
-			                                                        dec_file, short_dec_file, graph_file,
-			                                                        short_graph_file);
+			                                                        dec_file, graph_file);
 		}
 		else
 			throw std::invalid_argument("Unsupported type of decoder: valid decoder are 'SC' and 'SCAN'.");

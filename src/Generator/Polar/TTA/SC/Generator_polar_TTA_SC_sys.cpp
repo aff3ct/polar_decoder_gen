@@ -19,9 +19,7 @@ Generator_polar_TTA_SC_sys
                              const int idx_r0,
                              const int idx_r1,
                              std::ostream &dec_stream,
-                             std::ostream &short_dec_stream,
-                             std::ostream &graph_stream,
-                             std::ostream &short_graph_stream)
+                             std::ostream &graph_stream)
 : Generator_polar_TTA(K,
                       N,
                       snr,

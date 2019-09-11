@@ -21,10 +21,8 @@ public:
 	                           const std::vector<tools::Pattern_polar_i*> &patterns,
 	                           const int idx_r0,
 	                           const int idx_r1,
-	                           std::ostream &dec_stream         = std::cout,
-	                           std::ostream &short_dec_stream   = std::cout,
-	                           std::ostream &graph_stream       = std::cout,
-	                           std::ostream &short_graph_stream = std::cout);
+	                           std::ostream &dec_stream   = std::cout,
+	                           std::ostream &graph_stream = std::cout);
 	virtual ~Generator_polar_TTA_SC_sys();
 
 protected:

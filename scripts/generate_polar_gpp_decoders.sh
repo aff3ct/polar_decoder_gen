@@ -14,7 +14,7 @@ mkdir ./$ROOT/SCL/CRC/ > /dev/null 2>&1
 # Frozen bits generation method (Gaussian Approximation = "GA", Tal & Vardy = "TV")
 GEN="GA"
 
-echo "Generates SC decoders (rate 1/2)..."
+echo "Generates GPP SC decoders (rate 1/2)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N       4 -K      2 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N4_K2_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N       8 -K      4 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N8_K4_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N      16 -K      8 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N16_K8_SNR25.report 2>&1
@@ -38,7 +38,7 @@ echo "Generates SC decoders (rate 1/2)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N  524288 -K 262144 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N524288_K262144_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 1048576 -K 524288 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N1048576_K524288_SNR25.report 2>&1
 
-echo "Generates SC decoders (rate 5/6)..."
+echo "Generates GPP SC decoders (rate 5/6)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N       4 -K      3 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N4_K3_SNR40.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N       8 -K      7 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N8_K7_SNR40.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N      16 -K     13 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N16_K13_SNR40.report 2>&1
@@ -59,7 +59,7 @@ echo "Generates SC decoders (rate 5/6)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N  524288 -K 436907 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N524288_K436907_SNR40.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 1048576 -K 873813 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N1048576_K873813_SNR40.report 2>&1
 
-echo "Generates SC decoders N = 2048 (rate 1/10, 2/10, ..., 9/10)..."
+echo "Generates GPP SC decoders N = 2048 (rate 1/10, 2/10, ..., 9/10)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N 2048 -K  205 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K205_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 2048 -K  410 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K410_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 2048 -K  614 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K614_SNR25.report 2>&1
@@ -70,7 +70,7 @@ echo "Generates SC decoders N = 2048 (rate 1/10, 2/10, ..., 9/10)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N 2048 -K 1638 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K1638_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 2048 -K 1843 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K1843_SNR25.report 2>&1
 
-echo "Generates SC decoders N = 32768 (rate 1/10, 2/10, ..., 9/10)..."
+echo "Generates GPP SC decoders N = 32768 (rate 1/10, 2/10, ..., 9/10)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K  3277 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K3277_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K  6554 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K6554_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K  9830 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K9830_SNR25.report 2>&1
@@ -81,14 +81,14 @@ echo "Generates SC decoders N = 32768 (rate 1/10, 2/10, ..., 9/10)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K 26214 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K26214_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K 29491 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K29491_SNR25.report 2>&1
 
-echo "Generates SC decoders (other rates)..."
+echo "Generates GPP SC decoders (other rates)..."
 ./build/bin/polar_decoder_gen --dec-type SC -N  2048 -K   410 --fbg-noise 2.5 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K410_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N  2048 -K  1843 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N2048_K1843_SNR40.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 16384 -K 14746 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N16384_K14746_SNR40.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K 27568 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K27568_SNR40.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SC -N 32768 -K 29492 --fbg-noise 4.0 --fbg-gen-method $GEN --dec-path ./$ROOT/SC > ./$ROOT/SC/Decoder_polar_SC_fast_sys_N32768_K29492_SNR40.report 2>&1
 
-echo "Generates SCL decoders (all rates)..."
+echo "Generates GPP SCL decoders (all rates)..."
 ./build/bin/polar_decoder_gen --dec-type SCL -N    4 -K    2 --fbg-noise 2.5 --dec-polar-nodes "{R0,R0L,R1,REP,REPL,SPC_4}"  --fbg-gen-method $GEN --dec-path ./$ROOT/SCL/CRC > ./$ROOT/SCL/CRC/Decoder_polar_SCL_fast_CA_sys_N4_K2_SNR25.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SCL -N 2048 -K 1755 --fbg-noise 3.5 --dec-polar-nodes "{R0,R0L,R1,REP,REPL,SPC_4}"  --fbg-gen-method $GEN --dec-path ./$ROOT/SCL/CRC > ./$ROOT/SCL/CRC/Decoder_polar_SCL_fast_CA_sys_N2048_K1755_SNR35.report 2>&1
 ./build/bin/polar_decoder_gen --dec-type SCL -N  256 -K   64 --fbg-noise 3.0 --dec-polar-nodes "{R0,R0L,R1,REP,REPL,SPC_4+}" --fbg-gen-method $GEN --dec-path ./$ROOT/SCL/CRC > ./$ROOT/SCL/CRC/Decoder_polar_SCL_fast_CA_sys_N256_K64_SNR30.report 2>&1

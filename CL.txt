@@ -1,1 +1,0 @@
-./bin/polar_decoder_gen -N 64 -K 32 --fbg-gen-method FILE --fbg-awgn-path ../lib/aff3ct/conf/cde/awgn_polar_codes/TV/6/N64_awgn_s0.750.pc --dec-polar-nodes "{R0_8+,R1_8+}" -D SC --fbg-snr 1.0 -a TTA
