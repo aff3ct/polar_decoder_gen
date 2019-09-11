@@ -30,9 +30,9 @@ Parity Check`` tree cut simplifications:
 This code has been used to generate both software and hardware implementations
 in the following publications:
 
-Mathieu Léonardon, Camille Leroux, David Binet, J.M. Pierre Langlois, Christophe Jégo and Yvon Savaria,  
-[**Custom Low Power Processor for Polar Decoding**](https://doi.org/10.1109/ISCAS.2018.8351739),  
-*The 51st IEEE International Symposium on Circuits & Systems (ISCAS 2018), May 2018.*
+Mathieu Léonardon, Camille Leroux, Pekka Jääskeläinen, Christophe Jégo and Yvon Savaria,  
+[**Transport Triggered Polar Decoders**](https://doi.org/10.1109/ISTC.2018.8625310),  
+*The 10th International Symposium on Turbo Codes & Iterative Information Processing (ISTC 2018), December 2018.*
 
 
 Adrien Cassagne, Olivier Aumage, Camille Leroux, Denis Barthou and Bertrand Le Gal,  
