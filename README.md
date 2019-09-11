@@ -27,7 +27,13 @@ Parity Check`` tree cut simplifications:
 
 # Scientific publications
 
-This code has been used in the following publications:
+This code has been used to generate both software and hardware implementations
+in the following publications:
+
+Mathieu Léonardon, Camille Leroux, David Binet, J.M. Pierre Langlois, Christophe Jégo and Yvon Savaria,  
+[**Custom Low Power Processor for Polar Decoding**](https://doi.org/10.1109/ISCAS.2018.8351739),  
+*The 51st IEEE International Symposium on Circuits & Systems (ISCAS 2018), May 2018.*
+
 
 Adrien Cassagne, Olivier Aumage, Camille Leroux, Denis Barthou and Bertrand Le Gal,  
 [**Energy Consumption Analysis of Software Polar Decoders on Low Power Processors**](https://doi.org/10.1109/EUSIPCO.2016.7760327),  
