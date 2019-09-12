@@ -173,10 +173,6 @@ test-linux-gcc:
     - x86
   dependencies:
     - build-linux-gcc
-  artifacts:
-    name: build-linux-gcc
-    when: always
-    paths:
-      - ./build_linux_gcc/
   script:
+    - mv build_linux_gcc build
     - ./tests/run_tests.sh
