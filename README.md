@@ -1,5 +1,7 @@
 # Decoders generation for Polar codes
 
+[![pipeline status](https://gitlab.com/aff3ct/polar_decoder_gen/badges/master/pipeline.svg)](https://gitlab.com/aff3ct/polar_decoder_gen/pipelines)
+
 This project is made to generate **channel coding Polar decoders** (unrolled
 decoders): **Successive Cancellation** (SC) and **CRC Aided Successive
 Cancellation List** (CA-SCL) algorithms are supported. Given a specific codeword
