@@ -1,0 +1,182 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+
+stages:
+  - analysis
+  - build
+  - test
+
+before_script:
+  - hostname
+  - whoami
+
+analysis-cppcheck:
+  stage: analysis
+  variables:
+    GIT_SUBMODULE_STRATEGY: none
+  artifacts:
+    name: analysis-cppcheck-logs
+    when: always
+    paths:
+      - cppcheck/
+  tags:
+    - cppcheck
+  script:
+    - ./ci/analysis-cppcheck.sh
+
+build-linux-gcc:
+  stage: build
+  tags:
+    - linux
+    - gcc
+    - cmake
+    - x86
+  dependencies: []
+  artifacts:
+    name: build-linux-gcc
+    when: always
+    paths:
+      - ./build_linux_gcc/
+  script:
+    - export CXX="g++"
+    - export CFLAGS="-Wall -funroll-loops -msse4.2"
+    - export BUILD="build_linux_gcc"
+    - source ./ci/tools/threads.sh
+    - source ./ci/tools/aff3ct-git-version.sh
+    - ./ci/build-linux-macos.sh
+
+build-linux-clang:
+  stage: build
+  tags:
+    - linux
+    - clang
+    - cmake
+    - x86
+  dependencies: []
+  artifacts:
+    name: build-linux-clang
+    when: always
+    paths:
+      - ./build_linux_clang/
+  script:
+    - export CXX="clang++"
+    - export CFLAGS="-Wall -Wno-overloaded-virtual -funroll-loops -msse4.2"
+    - export BUILD="build_linux_clang"
+    - source ./ci/tools/threads.sh
+    - source ./ci/tools/aff3ct-git-version.sh
+    - ./ci/build-linux-macos.sh
+
+build-linux-gcc-4.8:
+  stage: build
+  tags:
+    - linux
+    - gcc-4.8
+    - cmake
+  dependencies: []
+  artifacts:
+    name: build-linux-gcc-4.8
+    when: always
+    paths:
+      - ./build_linux_gcc-4.8/
+  script:
+    - export CXX="g++-4.8"
+    - export CFLAGS="-Wall -funroll-loops -msse4.2"
+    - export BUILD="build_linux_gcc-4.8"
+    - source ./ci/tools/threads.sh
+    - source ./ci/tools/aff3ct-git-version.sh
+    - ./ci/build-linux-macos.sh
+
+build-linux-icpc:
+  stage: build
+  tags:
+    - linux
+    - icpc
+    - cmake
+    - x86
+  dependencies: []
+  artifacts:
+    name: build-linux-icpc
+    when: always
+    paths:
+      - ./build_linux_icpc/
+  script:
+    - export CXX="icpc"
+    - export CFLAGS="-Wall -funroll-loops -msse4.2 -std=c++11"
+    - export BUILD="build_linux_icpc"
+    - source ./ci/tools/threads.sh
+    - source ./ci/tools/aff3ct-git-version.sh
+    - ./ci/build-linux-macos.sh
+
+build-windows-gcc:
+  stage: build
+  tags:
+    - windows
+    - gcc
+    - cmake
+  dependencies: []
+  artifacts:
+    name: build-windows-gcc
+    when: always
+    paths:
+      - ./build_windows_gcc/
+  script:
+    - set "CFLAGS=-Wall -funroll-loops -mavx"
+    - set "BUILD=build_windows_gcc"
+    - call ./ci/tools/threads.bat
+    - call ./ci/tools/aff3ct-git-version.bat
+    - ./ci/build-windows-gcc.bat
+
+build-windows-msvc:
+  stage: build
+  tags:
+    - windows
+    - msvc
+    - cmake
+  dependencies: []
+  artifacts:
+    name: build-windows-msvc
+    when: always
+    paths:
+      - ./build_windows_msvc/
+  script:
+    - set "CFLAGS=-D_CRT_SECURE_NO_DEPRECATE /EHsc /arch:AVX"
+    - set "BUILD=build_windows_msvc"
+    - call ./ci/tools/threads.bat
+    - call ./ci/tools/aff3ct-git-version.bat
+    - ./ci/build-windows-msvc.bat
+
+build-macos-clang:
+  stage: build
+  tags:
+    - macos
+    - apple-clang
+    - cmake
+    - x86
+  dependencies: []
+  artifacts:
+    name: build-macos-clang
+    when: always
+    paths:
+      - ./build_macos_clang/
+  script:
+    - export CXX="clang++"
+    - export CFLAGS="-Wall -Wno-overloaded-virtual -funroll-loops -msse4.2"
+    - export BUILD="build_macos_clang"
+    - source ./ci/tools/threads.sh
+    - source ./ci/tools/aff3ct-git-version.sh
+    - ./ci/build-linux-macos.sh
+
+test-linux-gcc:
+  stage: test
+  tags:
+    - linux
+    - x86
+  dependencies:
+    - build-linux-gcc
+  artifacts:
+    name: build-linux-gcc
+    when: always
+    paths:
+      - ./build_linux_gcc/
+  script:
+    - ./tests/run_tests.sh

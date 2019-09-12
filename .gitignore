@@ -1,4 +1,4 @@
 .gitignore
-build*
+build*/
 tests/refs/*
-cmake
+cmake*/
