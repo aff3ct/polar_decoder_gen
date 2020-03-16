@@ -22,9 +22,12 @@ public:
 
 	virtual ~Pattern_polar_SC_r1() {}
 
-	virtual Pattern_polar_i* alloc(const int &N, const Binary_node<Pattern_polar_i>* node) const
+	virtual Pattern_polar_SC_r1* alloc(const int &N, const Binary_node<Pattern_polar_i>* node) const
 	{
-		return new Pattern_polar_SC_r1(N, node, this->min_level, this->max_level);
+		if (node == nullptr)
+			return new Pattern_polar_SC_r1(this->min_level, this->max_level);
+		else
+			return new Pattern_polar_SC_r1(N, node, this->min_level, this->max_level);
 	}
 
 	virtual std::string apply_f(std::string start_indent = "", std::string str_off_l = "", std::string str_off_s = "") const

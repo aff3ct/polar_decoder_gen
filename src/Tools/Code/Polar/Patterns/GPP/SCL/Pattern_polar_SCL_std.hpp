@@ -20,9 +20,12 @@ public:
 
 	virtual ~Pattern_polar_SCL_std() {}
 
-	virtual Pattern_polar_i* alloc(const int &N, const Binary_node<Pattern_polar_i>* node) const
+	virtual Pattern_polar_SCL_std* alloc(const int &N, const Binary_node<Pattern_polar_i>* node) const
 	{
-		return new Pattern_polar_SCL_std(N, node);
+		if (node == nullptr)
+			return new Pattern_polar_SCL_std();
+		else
+			return new Pattern_polar_SCL_std(N, node);
 	}
 
 	virtual std::string apply_f(std::string si = "", std::string str_off_l = "", std::string str_off_s = "") const

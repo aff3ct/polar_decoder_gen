@@ -5,6 +5,7 @@
 
 // AFF3CT header
 #include <aff3ct.hpp>
+#include <cli.hpp>
 
 #include "Generator/Polar/GPP/SC/Generator_polar_GPP_SC_sys.hpp"
 #include "Generator/Polar/GPP/SCL/Generator_polar_GPP_SCL_sys.hpp"
@@ -56,16 +57,16 @@ int main(int argc, char** argv)
 
 	std::string base_path = ".";
 	std::string arch = "GPP";
-	tools::Argument_map_info args;
+	cli::Argument_map_info args;
 
 	args.add({"help", "h"},
-		tools::None(),
+		cli::None(),
 		"print this help.");
 
-	factory::Frozenbits_generator::parameters params_fbg;
-	factory::Decoder_polar       ::parameters params_dec;
+	factory::Frozenbits_generator params_fbg;
+	factory::Decoder_polar        params_dec;
 
-	tools::Argument_map_group grps;
+	cli::Argument_map_group grps;
 	grps[params_fbg.get_prefix()] = params_fbg.get_short_name() + " parameters";
 	grps[params_dec.get_prefix()] = params_dec.get_short_name() + " parameters";
 
@@ -73,11 +74,11 @@ int main(int argc, char** argv)
 	params_dec.get_description(args);
 
 	args.add({params_dec.get_prefix()+"-path"},
-		tools::Folder(tools::openmode::read),
+		cli::Folder(cli::openmode::read),
 		"Base path where the decoder will be generated (default = current dir).");
 
 	args.add({"arch-type", "a"},
-		tools::Text(tools::Including_set("GPP", "TTA")),
+		cli::Text(cli::Including_set("GPP", "TTA")),
 		"Set the target architecture.");
 
 	args.erase({params_fbg.get_prefix()+"-sigma"           });
@@ -96,14 +97,14 @@ int main(int argc, char** argv)
 	args.erase({params_dec.get_prefix()+"-seed",           });
 
 	args.add({params_dec.get_prefix()+"-type", "D"},
-		tools::Text(tools::Including_set("SC", "SCL", "SCAN")),
+		cli::Text(cli::Including_set("SC", "SCL", "SCAN")),
 		"Set the type of decoder to generate (or to unroll).");
 
 	auto const_argv = const_cast<const char**>(argv);
-	tools::Argument_handler ah(argc, const_argv);
-	tools::Argument_map_value arg_vals;
+	cli::Argument_handler ah(argc, const_argv);
+	cli::Argument_map_value arg_vals;
 	std::vector<std::string> cmd_warn, cmd_error;
-	std::map<std::string,factory::header_list> headers;
+	std::map<std::string,tools::header_list> headers;
 
 	arg_vals = ah.parse_arguments(args, cmd_warn, cmd_error);
 
@@ -151,10 +152,10 @@ int main(int argc, char** argv)
 	// print the help tags
 	if (!cmd_error.empty() && !display_help)
 	{
-		tools::Argument_tag help_tag = {"help", "h"};
+		cli::Argument_tag help_tag = {"help", "h"};
 
 		std::string message = "For more information please display the help (\"";
-		message += tools::Argument_handler::print_tag(help_tag) += "\").";
+		message += cli::Argument_handler::print_tag(help_tag) += "\").";
 
 		std::cerr << std::endl << rang::tag::info << message << std::endl;
 
@@ -162,8 +163,8 @@ int main(int argc, char** argv)
 	}
 
 	int max_n_chars = 0;
-	factory::Header::compute_max_n_chars(headers[params_fbg.get_prefix()], max_n_chars);
-	factory::Header::compute_max_n_chars(headers[params_dec.get_prefix()], max_n_chars);
+	tools::Header::compute_max_n_chars(headers[params_fbg.get_prefix()], max_n_chars);
+	tools::Header::compute_max_n_chars(headers[params_dec.get_prefix()], max_n_chars);
 
 	// display configuration parameters
 	std::cout << "# " << rang::style::bold << "-------------------------------------------------" << std::endl;
@@ -172,15 +173,15 @@ int main(int argc, char** argv)
 	std::cout << "# " << rang::style::bold << rang::style::underline << "Parameters:" << rang::style::reset << std::endl;
 
 	if (headers["fbg"].size())
-		factory::Header::print_parameters(params_fbg.get_prefix(),
-		                                  params_fbg.get_short_name(),
-		                                  headers[params_fbg.get_prefix()],
-		                                  max_n_chars);
+		tools::Header::print_parameters(params_fbg.get_prefix(),
+		                                params_fbg.get_short_name(),
+		                                headers[params_fbg.get_prefix()],
+		                                max_n_chars);
 	if (headers["dec"].size())
-		factory::Header::print_parameters(params_dec.get_prefix(),
-		                                  params_dec.get_short_name(),
-		                                  headers[params_dec.get_prefix()],
-		                                  max_n_chars);
+		tools::Header::print_parameters(params_dec.get_prefix(),
+		                                params_dec.get_short_name(),
+		                                headers[params_dec.get_prefix()],
+		                                max_n_chars);
 
 	if (!tools::is_power_of_2(params_dec.N_cw))
 		throw std::invalid_argument("'N' has to be a power of 2 ('N' = " + std::to_string(params_dec.N_cw) + ").");
@@ -189,9 +190,10 @@ int main(int argc, char** argv)
 	// --------------------------------------------------------------------------------------------- objects allocation
 	// ----------------------------------------------------------------------------------------------------------------
 
-	auto fb_generator = factory::Frozenbits_generator::build(params_fbg);
+	auto fb_generator = params_fbg.build();
 	const auto ebn0 = params_fbg.noise;
-	fb_generator->set_noise(tools::Sigma<float>(tools::esn0_to_sigma(tools::ebn0_to_esn0(ebn0, params_dec.R))));
+	tools::Sigma<float> noise(tools::esn0_to_sigma(tools::ebn0_to_esn0(ebn0, params_dec.R)));
+	fb_generator->set_noise(noise);
 
 	// generate the frozen bits
 	std::vector<bool> frozen_bits(params_dec.N_cw);
